@@ -1,0 +1,465 @@
+/* Global Style */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f1f5f9;
+}
+
+button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Topbar */
+.topbar {
+    height: 50px;
+    background: #1e293b;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+}
+
+.menu-btn {
+    font-size: 20px;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+/* Tabs Navigation */
+.tabs {
+    display: flex;
+    margin-left: 20px;
+}
+
+.tab {
+    background: #444;
+    color: white;
+    padding: 8px 25px 8px 15px;
+    margin-right: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    position: relative;
+    border-radius: 8px;
+}
+
+.tab.active {
+    background: #d32f2f;
+}
+
+.tab .close {
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background: #243447;
+    color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: 0.3s ease;
+    z-index: 1000;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.sidebar h2 {
+    margin-top: 0;
+}
+
+.sidebar a {
+    display: block;
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.sidebar a:hover {
+    background: #334155;
+}
+
+/* Sidebar Submenu */
+.submenu {
+    display: none;
+    padding-left: 10px;
+}
+
+.submenu a {
+    font-size: 13px;
+    background: #334155;
+}
+
+/* Table Style */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 13px;
+    table-layout: fixed;
+
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    vertical-align: middle;
+}
+/* Potong text panjang */
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+thead {
+    background: #e5e5e5;
+}
+
+tbody tr:nth-child(even) {
+    background: #f7f7f7;
+}
+
+tbody tr:hover {
+    background: #dbe8f3;
+}
+
+/* Content Area */
+.content {
+    position: relative;
+    height: calc(100vh - 50px);
+    overflow: hidden;
+    padding: 10px;
+}
+
+/* Drawer Panel */
+.drawer {
+    position: absolute;
+    top: 0;
+    right: -900px;
+    width: 900px;
+    height: 100%;
+    background: white;
+    box-shadow: -3px 0 10px rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    overflow-y: auto;
+}
+
+.drawer.active {
+    right: 0;
+}
+
+.drawer-arrow {
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 60px;
+    background: #1e293b;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 4px 0 0 4px;
+    cursor: pointer;
+    z-index: 2000;
+}
+
+.drawer-arrow:hover {
+    background: #ef4444;
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    background: white;
+}
+
+.drawer-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 5px 8px;
+}
+
+.drawer-close:hover {
+    background: #e5e7eb;
+    border-radius: 4px;
+}
+/* Button Style */
+.btn-grey {
+    background: #6b7280;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-grey:hover {
+    background: #4b5563;
+}
+
+/* Alert Message */
+.alert-success {
+    background: #e6ffed;
+    color: #0a7a2f;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+/* Section Box */
+.section-box {
+    position: relative;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 25px 20px 30px 20px;
+    margin: 20px;
+}
+
+.section-title {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 0 8px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.section-button {
+    position: absolute;
+    bottom: -12px;
+    left: 15px;
+    background: white;
+    border: 1px solid #2563eb;
+    color: #2563eb;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.section-button:hover {
+    background: #2563eb;
+    color: white;
+}
+
+.section-box h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+/* Form Layout */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 12px;
+    margin-bottom: 4px;
+    color: #555;
+}
+
+/* Readonly Input */
+.readonly {
+    background: #f1f5f9;
+    cursor: not-allowed;
+}
+
+/* Table Container */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.custom-table {
+    min-width: 1200px;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.custom-table th,
+.custom-table td {
+    border: 1px solid #e5e7eb;
+    padding: 8px;
+    text-align: left;
+}
+
+.custom-table th {
+    background: #f3f4f6;
+}
+
+/* Toolbar */
+.toolbar {
+    display: flex;
+    gap: 10px;
+    padding: 8px 15px;
+    border-bottom: 1px solid #d1d5db;
+    background: #f8fafc;
+}
+
+.toolbar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 5px 8px;
+}
+
+.toolbar button:hover {
+    background: #e5e7eb;
+    border-radius: 4px;
+}
+
+/* Page Header */
+.page-header {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    background: white;
+}
+
+/* Print Page */
+@page {
+    size: 100mm 30mm;
+    margin: 0;
+}
+
+.print-body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Label */
+.label {
+    width: 90mm;
+    height: 25mm;
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+}
+
+.label-qr {
+    width: 28mm;
+    height: 30mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid black;
+}
+
+/* Label Info */
+.label-info {
+    flex: 1;
+    padding: 1mm 2mm;
+}
+
+/* Text Styles */
+.text-big {
+    font-size: 4mm;
+    font-weight: bold;
+    border-bottom: 1px solid black;
+}
+
+.text-medium {
+    font-size: 3.2mm;
+    font-weight: bold;
+    border-bottom: 1px solid black;
+}
+
+.text-small {
+    font-size: 2.8mm;
+}
+
+/* ==============================
+   DETAILS TAB STYLE
+============================== */
+
+.details-tabs{
+    display:flex;
+    gap:5px;
+    border-bottom:2px solid #e5e7eb;
+    margin-bottom:15px;
+}
+
+/* TAB BUTTON */
+.details-tab{
+    padding:8px 18px;
+    background:#f3f4f6;
+    border:1px solid #e5e7eb;
+    border-bottom:none;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    color:#555;
+    border-radius:6px 6px 0 0;
+    transition:all 0.2s ease;
+}
+
+/* HOVER */
+.details-tab:hover{
+    background:#e5e7eb;
+}
+
+/* ACTIVE TAB */
+.details-tab.active{
+    background:#ffffff;
+    color:#111827;
+    border:1px solid #e5e7eb;
+    border-bottom:2px solid white;
+    position:relative;
+    top:2px;
+}
+
+/* TAB CONTENT */
+.details-tab-content{
+    display:none;
+    padding-top:10px;
+}
+
+/* ACTIVE CONTENT */
+.details-tab-content.active{
+    display:block;
+}
