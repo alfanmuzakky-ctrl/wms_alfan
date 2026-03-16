@@ -57,11 +57,34 @@ Route::post('/inbounds/receive', [InboundController::class, 'received']);
 Route::get('/inventories', [InventoryController::class, 'index']);
 
 /* Outbound Management */
+Route::get('/outbounds',[OutboundController::class,'index']);
 
-Route::get('/outbounds', [OutboundController::class,'index']);
-Route::get('/outbounds/create', [OutboundController::class,'create']);
-Route::post('/outbounds/store', [OutboundController::class,'store']);
-Route::get('/outbounds/{id}', [OutboundController::class,'show']);
+Route::get('/outbounds/create',[OutboundController::class,'create']);
+
+Route::post('/outbounds',[OutboundController::class,'store']);
+
+Route::get('/outbounds/{id}',[OutboundController::class,'show']);
+
+Route::post('/outbounds/{id}/add-sku',[OutboundController::class,'addSku']);
+
+Route::post('/outbounds/{id}/allocate',[OutboundController::class,'allocate']);
+
+Route::post('/outbounds/{id}/picking',[OutboundController::class,'picking']);
+
+Route::post('/outbounds/{id}/packing',[OutboundController::class,'packing']);
+
+Route::post('/outbounds/{id}/ship',[OutboundController::class,'ship']);
+Route::get('/outbounds',[OutboundController::class,'index']);
+
+Route::get('/outbounds/{id}',[OutboundController::class,'show']);
+Route::post('/outbounds/{id}/allocate',[OutboundController::class,'allocate']);
+
+Route::post('/outbounds/{id}/picking',[OutboundController::class,'picking']);
+
+Route::post('/outbounds/{id}/packing',[OutboundController::class,'packing']);
+
+Route::post('/outbounds/{id}/ship',[OutboundController::class,'ship']);
+
 /* Customer Management */
 Route::resource('customers', CustomerController::class);
 Route::get('/customers', [CustomerController::class, 'index']);
@@ -71,7 +94,7 @@ Route::put('/customers/{id}', [CustomerController::class, 'update'])->where('id'
 /* Print & Reporting */
 Route::get('/print/sku/{detail}', [PrintController::class, 'printSku'])->name('print.sku');
 Route::get('/print/inbound/{id}', [PrintController::class, 'printInbound'])->name('print.inbound');
-
+Route::get('/print/picking/{id}', [PrintController::class,'printPicking']);
 
 Route::prefix('outbounds')->group(function(){
 
@@ -92,3 +115,14 @@ Route::get('/outbounds', [OutboundController::class, 'index']);
 
 Route::get('/outbounds/create',[OutboundController::class,'create']);
 Route::post('/outbounds',[OutboundController::class,'store']);
+
+use App\Http\Controllers\PackingCheckController;
+/* Packing & Check */
+Route::get('/packing-check',[PackingCheckController::class,'index']);
+Route::resource('packing', CustomerController::class);
+
+Route::post('/packing-check/load-order',[PackingCheckController::class,'loadOrder']);
+
+Route::post('/packing-check/scan-sku',[PackingCheckController::class,'scanSku']);
+
+Route::post('/packing-check/confirm-pack',[PackingCheckController::class,'confirmPack']);

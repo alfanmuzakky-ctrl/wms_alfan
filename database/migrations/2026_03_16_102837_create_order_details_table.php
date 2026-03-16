@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,6 +16,9 @@ return new class extends Migration
 
             $table->string('location');
 
+            $table->string('batch_number')->nullable();
+            $table->date('expired_date')->nullable();
+
             $table->integer('qty_allocated')->default(0);
             $table->integer('qty_picked')->default(0);
 
@@ -23,10 +27,9 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('outbound_detail_id')
-                  ->references('id')
-                  ->on('outbound_details')
-                  ->onDelete('cascade');
-
+                ->references('id')
+                ->on('outbound_details')
+                ->onDelete('cascade');
         });
     }
 

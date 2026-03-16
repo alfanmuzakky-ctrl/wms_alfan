@@ -1,6 +1,7 @@
 <x-toolbar resource="outbounds" label="Outbound" />
 
 <div class="table-container">
+
 <table class="custom-table">
 
 <thead>
@@ -17,13 +18,19 @@
 
 @foreach($outbounds as $outbound)
 
-<tr onclick="openDetail('outbounds','{{ $outbound->id }}')" 
-style="cursor:pointer;" 
-class="row-hover">
+<tr
+onclick="openDetail('outbounds','{{ $outbound->id }}')"
+style="cursor:pointer;"
+class="row-hover"
+>
 
-<td class="font-bold">{{ $outbound->id }}</td>
+<td class="font-bold">
+{{ $outbound->id }}
+</td>
 
-<td>{{ $outbound->customer->name ?? $outbound->customer_id }}</td>
+<td>
+{{ $outbound->customer->name ?? $outbound->customer_id }}
+</td>
 
 <td>
 <span class="status-badge status-{{ strtolower($outbound->status) }}">
@@ -37,13 +44,21 @@ class="row-hover">
 
 <td onclick="event.stopPropagation();">
 
-@if($outbound->status !== 'CLOSE')
-<button class="btn-danger"
-onclick="closeOutbound('{{ $outbound->id }}')">
-Close
+@if($outbound->status !== 'SHIPPED')
+
+<button
+class="btn-danger"
+onclick="shipOutbound('{{ $outbound->id }}')"
+>
+Ship
 </button>
+
 @else
-<span class="text-locked">Locked</span>
+
+<span class="text-locked">
+Locked
+</span>
+
 @endif
 
 </td>
@@ -53,13 +68,17 @@ Close
 @endforeach
 
 @if($outbounds->isEmpty())
+
 <tr>
 <td colspan="5" style="text-align:center;padding:30px;">
-Data outbound belum tersedia
+Data outbound belum tersedia.
 </td>
 </tr>
+
 @endif
 
 </tbody>
+
 </table>
+
 </div>

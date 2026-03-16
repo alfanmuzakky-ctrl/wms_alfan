@@ -52,7 +52,7 @@
                 <a onclick="toggleMenu('outbound')" class="nav-dropdown">Outbound <span class="arrow">▾</span></a>
                 <div id="outbound" class="submenu">
                     <a onclick="openTab('/outbounds', 'Outbound')">Outbound Order</a>
-                    <a onclick="openTab('/packing', 'Packing')">Packing & Check</a>
+                    <a onclick="openTab('/packing-check', 'Packing')">Packing & Check</a>
                     <a onclick="openTab('/shipping', 'Shipping')">Shipping</a>
                 </div>
             </div>

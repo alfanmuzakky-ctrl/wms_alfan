@@ -30,4 +30,13 @@ public function allocations()
 {
     return $this->hasMany(OrderDetail::class);
 }
+public function skuData()
+{
+    return $this->belongsTo(Sku::class,'sku','id');
 }
+public function orders()
+{
+return $this->hasMany(OrderDetail::class);
+}
+}
+

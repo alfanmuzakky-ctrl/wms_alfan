@@ -15,7 +15,7 @@ body{
 }
 
 .container{
-    width: 500px;
+    width:500px;
 }
 
 .header{
@@ -44,7 +44,7 @@ table{
     margin-top:10px;
 }
 
-th, td{
+th,td{
     border:1px solid black;
     padding:6px;
     font-size:14px;
@@ -64,12 +64,12 @@ th{
 <div class="header">
 
 <div>
-<div class="title">ORDERPICKINGLIST</div>
-<div class="order">OrderNo : {{ $outbound_id }}</div>
+<div class="title">ORDER PICKING LIST</div>
+<div class="order">Order No : {{ $outbound->id }}</div>
 </div>
 
 <div class="qr">
-{!! QrCode::size(80)->generate($outbound_id) !!}
+{!! QrCode::size(80)->generate($outbound->id) !!}
 </div>
 
 </div>
@@ -80,20 +80,20 @@ th{
 <tr>
 <th>Location</th>
 <th>SKU</th>
-<th>NAME</th>
-<th>QTY</th>
+<th>Name</th>
+<th>Qty</th>
 </tr>
 </thead>
 
 <tbody>
 
-@foreach($allocations as $alloc)
+@foreach($orderDetails as $order)
 
 <tr>
-<td>{{ $alloc->location_id }}</td>
-<td>{{ $alloc->sku_id }}</td>
-<td>{{ $alloc->sku->name }}</td>
-<td style="text-align:center">{{ $alloc->qty_allocated }}</td>
+<td>{{ $order->location }}</td>
+<td>{{ $order->outboundDetail->sku }}</td>
+<td>{{ $order->outboundDetail->skuData->name }}</td>
+<td style="text-align:center">{{ $order->qty_allocated }}</td>
 </tr>
 
 @endforeach

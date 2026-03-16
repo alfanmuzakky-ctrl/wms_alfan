@@ -1,115 +1,172 @@
-<h2>Outbound Detail</h2>
+<div class="section-box">
+    <div class="section-title">Outbound Detail</div>
 
-<div class="header-box">
+    <div class="form-grid">
 
-<div>
-<label>Outbound ID</label>
-<input value="{{ $outbound->id }}" readonly>
+        <div class="form-group">
+            <label>Outbound ID</label>
+            <input type="text" value="{{ $outbound->id }}" readonly class="readonly-field">
+        </div>
+
+        <div class="form-group">
+            <label>Customer</label>
+            <input type="text" value="{{ $outbound->customer->name ?? '-' }}" readonly class="readonly-field">
+        </div>
+
+        <div class="form-group">
+            <label>Status Outbound</label>
+            <span class="status-badge status-{{ strtolower($outbound->status) }}">
+                {{ $outbound->status }}
+            </span>
+        </div>
+
+    </div>
 </div>
 
-<div>
-<label>Customer</label>
-<input value="{{ $outbound->customer->name }}" readonly>
-</div>
 
-<div>
-<label>Status</label>
-<input value="{{ $outbound->status }}" readonly>
-</div>
+@if($outbound->status !== 'SHIPPED')
+<div class="section-box">
+    <div class="section-title">Tambah Produk ke Order</div>
 
-<div>
-<label>Create Time</label>
-<input value="{{ $outbound->created_at }}" readonly>
-</div>
+    <form id="addSkuForm" data-type="outbounds">
+    @csrf
 
-</div>
+    <input type="hidden" class="target-id" value="{{ $outbound->id }}">
 
-<hr>
+    <div class="form-grid">
 
-<h3>Tambah SKU</h3>
+        <div class="form-group">
+            <label>Pilih SKU</label>
+            <select name="sku" class="form-control" required>
+                <option value="">-- Pilih SKU --</option>
 
-<form method="POST" action="/outbounds/add-sku">
+                @foreach($skus as $sku)
+                    <option value="{{ $sku->id }}">
+                        {{ $sku->id }} - {{ $sku->name }}
+                    </option>
+                @endforeach
 
-@csrf
+            </select>
+        </div>
 
-<input type="hidden" name="outbound_id" value="{{ $outbound->id }}">
+        <div class="form-group">
+            <label>Quantity</label>
+            <input type="number" name="qty" class="form-control" min="1" required>
+        </div>
 
-<select name="sku">
+    </div>
 
-@foreach($skus as $sku)
-
-<option value="{{ $sku->id }}">
-{{ $sku->id }} - {{ $sku->name }}
-</option>
-
-@endforeach
-
-</select>
-
-<input type="number" name="qty" placeholder="Qty">
-
-<button type="submit">Tambah</button>
+    <div style="margin-top:15px;">
+        <button type="submit" class="btn-primary">
+            + Tambah SKU
+        </button>
+    </div>
 
 </form>
 
-<hr>
 
-<h3>Order Detail</h3>
+</div>
+@endif
 
-<table border="1">
 
-<tr>
-<th>Status</th>
-<th>SKU</th>
-<th>Nama SKU</th>
-<th>Order</th>
-<th>Allocated</th>
-<th>Picked</th>
-<th>Packed</th>
-</tr>
 
-@foreach($details as $d)
+<div class="section-box">
 
-<tr>
+    <div class="section-title">Item List</div>
 
-<td>{{ $d->status }}</td>
-<td>{{ $d->sku }}</td>
-<td>{{ $d->skuData->name }}</td>
-<td>{{ $d->order_qty }}</td>
-<td>{{ $d->qty_allocated }}</td>
-<td>{{ $d->qty_picked }}</td>
-<td>{{ $d->qty_packed }}</td>
+    <div class="table-container">
+        <table class="custom-table">
 
-</tr>
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Order</th>
+                    <th>Allocated</th>
+                    <th>Picked</th>
+                    <th>Packed</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
 
-@endforeach
+            <tbody>
 
-</table>
+            @foreach($details as $d)
 
-<hr>
+            <tr>
 
-<h3>Allocation Detail</h3>
+                <td>
+                    <strong>{{$d->sku}}</strong>
+                    <br>
+                    <small>{{$d->skuData->name ?? '-'}}</small>
+                </td>
 
-<table border="1">
+                <td>{{$d->order_qty}}</td>
 
-<tr>
-<th>SKU</th>
-<th>Location</th>
-<th>Allocated</th>
-<th>Picked</th>
-</tr>
+                <td>{{$d->qty_allocated}}</td>
 
-@foreach($allocations as $a)
+                <td>{{$d->qty_picked}}</td>
 
-<tr>
+                <td>{{$d->qty_packed}}</td>
 
-<td>{{ $a->outboundDetail->sku }}</td>
-<td>{{ $a->location }}</td>
-<td>{{ $a->qty_allocated }}</td>
-<td>{{ $a->qty_picked }}</td>
+                <td>
+                    <span class="status-badge status-{{ strtolower($d->status) }}">
+                        {{$d->status}}
+                    </span>
+                </td>
 
-</tr>
+            </tr>
 
-@endforeach
+            @endforeach
 
-</table>
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+
+
+<div class="toolbar" style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
+
+<button
+onclick="submitAction(
+'/outbounds/{{ $outbound->id }}/allocate',
+'outbounds',
+'{{ $outbound->id }}'
+)">
+Allocate
+</button>
+
+<button
+onclick="submitAction(
+'/outbounds/{{ $outbound->id }}/picking',
+'outbounds',
+'{{ $outbound->id }}'
+)">
+Picking
+</button>
+
+<button class="btn-primary"
+onclick="closeDrawer(); openTab('/packing-check','Packing & Check')">
+Start Packing
+</button>
+
+<button
+onclick="submitAction(
+'/outbounds/{{ $outbound->id }}/ship',
+'outbounds',
+'{{ $outbound->id }}'
+)">
+Ship
+</button>
+
+<button class="btn-primary"
+onclick="window.open('/print/picking/{{ $outbound->id }}','_blank')">
+Print Picking
+</button>
+
+</div>
+
+
+

@@ -44,6 +44,7 @@ function openTab(url, title) {
     if (existing) {
         activateTab(existing);
         loadPage(url);
+        closeDrawer();
         return;
     }
 
@@ -59,11 +60,13 @@ function openTab(url, title) {
     tab.onclick = function() {
         activateTab(tab);
         loadPage(url);
+        closeDrawer();
     };
 
     tabsContainer.appendChild(tab);
     activateTab(tab);
-    loadPage(url);
+    loadPage(url);  
+    closeDrawer();
 }
 
 // Tab Aktif
@@ -461,9 +464,6 @@ function submitPutaway(inventoryId) {
 |--------------------------------------------------------------------------
 */
 
-const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -562,132 +562,277 @@ function addSku(outboundId){
 
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| ALLOCATE STOCK
-|--------------------------------------------------------------------------
-*/
-
 function allocateOutbound(id){
 
-    fetch(`/outbounds/${id}/allocate`,{
-        method:'POST',
-        headers:{
-            'X-CSRF-TOKEN':csrfToken
-        }
-    })
-
-    .then(res=>res.json())
-
-    .then(data=>{
-
-        if(data.success){
-
-            alert('Stock Allocated');
-
-            location.reload();
-
-        }
-
-    });
+fetch('/outbounds/'+id+'/allocate',{
+method:'POST',
+headers:{
+'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content
+}
+}).then(()=>location.reload())
 
 }
-
-
-/*
-|--------------------------------------------------------------------------
-| PICKING
-|--------------------------------------------------------------------------
-*/
 
 function pickingOutbound(id){
 
-    fetch(`/outbounds/${id}/picking`,{
-        method:'POST',
-        headers:{
-            'X-CSRF-TOKEN':csrfToken
-        }
-    })
-
-    .then(res=>res.json())
-
-    .then(data=>{
-
-        if(data.success){
-
-            alert('Picking selesai');
-
-            location.reload();
-
-        }
-
-    });
+fetch('/outbounds/'+id+'/picking',{
+method:'POST',
+headers:{
+'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content
+}
+}).then(()=>location.reload())
 
 }
-
-
-/*
-|--------------------------------------------------------------------------
-| PACKING
-|--------------------------------------------------------------------------
-*/
 
 function packingOutbound(id){
 
-    fetch(`/outbounds/${id}/packing`,{
-        method:'POST',
-        headers:{
-            'X-CSRF-TOKEN':csrfToken
-        }
-    })
-
-    .then(res=>res.json())
-
-    .then(data=>{
-
-        if(data.success){
-
-            alert('Packing selesai');
-
-            location.reload();
-
-        }
-
-    });
+fetch('/outbounds/'+id+'/packing',{
+method:'POST',
+headers:{
+'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content
+}
+}).then(()=>location.reload())
 
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| SHIP
-|--------------------------------------------------------------------------
-*/
 
 function shipOutbound(id){
 
-    if(!confirm("Kirim barang ini?")) return;
+if(!confirm("Ship outbound ini?")) return;
 
-    fetch(`/outbounds/${id}/ship`,{
-        method:'POST',
-        headers:{
-            'X-CSRF-TOKEN':csrfToken
-        }
-    })
+fetch('/outbounds/'+id+'/ship',{
 
-    .then(res=>res.json())
+method:'POST',
 
-    .then(data=>{
+headers:{
+'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content
+}
 
-        if(data.success){
-
-            alert('Shipment berhasil');
-
-            location.reload();
-
-        }
-
-    });
+})
+.then(()=>location.reload())
 
 }
+
+// ================================
+// PACKING CHECK MODULE
+// ================================
+
+window.outboundId = null;
+
+
+// ambil csrf token
+function csrfToken()
+{
+    let meta = document.querySelector('meta[name="csrf-token"]')
+    return meta ? meta.getAttribute('content') : ''
+}
+
+
+
+// ================================
+// LOAD ORDER
+// ================================
+
+window.loadOrder = function()
+{
+
+    let input = document.getElementById("outboundInput")
+
+    if(!input)
+    {
+        console.log("outboundInput tidak ditemukan")
+        return
+    }
+
+    outboundId = input.value
+
+    if(!outboundId)
+    {
+        alert("Scan Outbound ID dulu")
+        return
+    }
+
+    fetch('/packing-check/load-order',{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+            'X-CSRF-TOKEN': csrfToken()
+        },
+        body: JSON.stringify({
+            outbound_id: outboundId
+        })
+    })
+    .then(r=>r.json())
+    .then(data=>{
+
+        if(data.error)
+        {
+            alert(data.error)
+            return
+        }
+
+        let table = document.querySelector("#orderTable tbody")
+
+        if(!table) return
+
+        table.innerHTML = ""
+
+        data.details.forEach(d=>{
+
+            table.innerHTML += `
+            <tr>
+                <td>${d.sku}</td>
+                <td>${d.order_qty}</td>
+                <td id="packed-${d.sku}">
+                    ${d.qty_packed}
+                </td>
+            </tr>
+            `
+
+        })
+
+        let skuInput = document.getElementById("skuInput")
+        if(skuInput) skuInput.focus()
+
+    })
+
+}
+
+
+
+// ================================
+// SCAN SKU
+// ================================
+
+window.scanSku = function()
+{
+
+    let input = document.getElementById("skuInput")
+
+    if(!input) return
+
+    let sku = input.value
+
+    if(!sku)
+    {
+        alert("Scan SKU dulu")
+        return
+    }
+
+    fetch('/packing-check/scan-sku',{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+            'X-CSRF-TOKEN': csrfToken()
+        },
+        body: JSON.stringify({
+            outbound_id: outboundId,
+            sku: sku
+        })
+    })
+    .then(r=>r.json())
+    .then(data=>{
+
+        if(data.error)
+        {
+            alert(data.error)
+            return
+        }
+
+        let cell = document.getElementById("packed-"+data.sku)
+
+        if(cell)
+        {
+            cell.innerText = data.qty_packed
+        }
+
+        input.value=""
+        input.focus()
+
+    })
+
+}
+
+
+
+// ================================
+// CONFIRM PACK
+// ================================
+
+window.confirmPack = function()
+{
+
+    if(!outboundId)
+    {
+        alert("Load order dulu")
+        return
+    }
+
+    if(!confirm("Yakin packing selesai?"))
+    {
+        return
+    }
+
+    fetch('/packing-check/confirm-pack',{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+            'X-CSRF-TOKEN': csrfToken()
+        },
+        body: JSON.stringify({
+            outbound_id: outboundId
+        })
+    })
+    .then(r=>r.json())
+    .then(data=>{
+
+        if(data.error)
+        {
+            alert(data.error)
+            return
+        }
+
+        alert("Packing selesai")
+
+        location.reload()
+
+    })
+
+}
+
+
+function submitAction(url, module, id, payload = {})
+{
+
+fetch(url, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+    },
+    body: JSON.stringify(payload)
+})
+.then(res => res.json())
+.then(data => {
+
+    if (data.success) {
+
+        // refresh drawer
+        openDetail(module, id);
+
+    } else {
+
+        alert("Gagal: " + data.message);
+
+    }
+
+})
+.catch(err => {
+
+    console.error("Error:", err);
+    alert("Server error");
+
+});
+
+}   

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 /* Imports */
 use App\Models\Inbound;
 use App\Models\InboundDetail;
+use App\Models\Outbound;
 use App\Models\Allocation;
+use App\Models\OrderDetail;
 
 class PrintController extends Controller
 {
@@ -27,17 +29,20 @@ class PrintController extends Controller
     }
 
     /* Print Picking List (Outbound) */
-    public function printOutbound($id)
-    {
-        $allocations = Allocation::with(['sku','location'])
-            ->where('outbound_id', $id)
-            ->orderBy('location_id')
-            ->get();
+    public function printPicking($id)
+{
+    $outbound = Outbound::findOrFail($id);
 
-        return view('print.picking_list', [
-    'outbound_id' => $id,
-    'allocations' => $allocations
-]);
-    }
+    $orderDetails = OrderDetail::with('outboundDetail.skuData')
+        ->whereHas('outboundDetail', function($q) use ($id){
+            $q->where('outbound_id',$id);
+        })
+        ->orderBy('location')
+        ->get();
 
+    return view('print.picking_list', compact(
+        'outbound',
+        'orderDetails'
+    ));
+}
 }
