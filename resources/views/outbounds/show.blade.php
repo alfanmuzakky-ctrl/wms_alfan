@@ -1,75 +1,40 @@
-<div class="section-box">
+<h2>Outbound Detail</h2>
 
-<div class="section-title">
-Outbound Order
-</div>
+<div class="header-box">
 
-<div class="form-grid">
-
-<div class="form-group">
+<div>
 <label>Outbound ID</label>
-<input type="text"
-value="{{ $outbound->id }}"
-readonly
-class="readonly-field">
+<input value="{{ $outbound->id }}" readonly>
 </div>
 
-<div class="form-group">
+<div>
 <label>Customer</label>
-<input type="text"
-value="{{ $outbound->customer->name ?? $outbound->customer_id }}"
-readonly
-class="readonly-field">
+<input value="{{ $outbound->customer->name }}" readonly>
 </div>
 
-<div class="form-group">
-
+<div>
 <label>Status</label>
-
-<div style="display:flex;align-items:center;gap:10px;">
-
-<span class="status-badge status-{{ strtolower($outbound->status) }}">
-{{ $outbound->status }}
-</span>
-
-@if($outbound->status != 'SHIPPED')
-<button
-type="button"
-class="btn-small btn-danger"
-onclick="closeOutbound('{{ $outbound->id }}')">
-Close
-</button>
-@endif
-
+<input value="{{ $outbound->status }}" readonly>
 </div>
+
+<div>
+<label>Create Time</label>
+<input value="{{ $outbound->created_at }}" readonly>
 </div>
 
 </div>
-</div>
-@if($outbound->status == 'ORDER')
 
-<div class="section-box">
+<hr>
 
-<div class="section-title">
-Tambah Produk ke Order
-</div>
+<h3>Tambah SKU</h3>
 
-<form id="addSkuForm" data-type="outbounds">
+<form method="POST" action="/outbounds/add-sku">
 
 @csrf
 
-<input type="hidden"
-name="outbound_id"
-value="{{ $outbound->id }}">
+<input type="hidden" name="outbound_id" value="{{ $outbound->id }}">
 
-<div class="form-grid">
-
-<div class="form-group">
-<label>Pilih SKU</label>
-
-<select name="sku_id" required>
-
-<option value="">-- Pilih SKU --</option>
+<select name="sku">
 
 @foreach($skus as $sku)
 
@@ -81,29 +46,70 @@ value="{{ $outbound->id }}">
 
 </select>
 
-</div>
+<input type="number" name="qty" placeholder="Qty">
 
-<div class="form-group">
-<label>Quantity</label>
-
-<input
-type="number"
-name="qty"
-min="1"
-required>
-
-</div>
-
-</div>
-
-<br>
-
-<button class="btn-primary">
-+ Tambah SKU
-</button>
+<button type="submit">Tambah</button>
 
 </form>
 
-</div>
+<hr>
 
-@endif
+<h3>Order Detail</h3>
+
+<table border="1">
+
+<tr>
+<th>Status</th>
+<th>SKU</th>
+<th>Nama SKU</th>
+<th>Order</th>
+<th>Allocated</th>
+<th>Picked</th>
+<th>Packed</th>
+</tr>
+
+@foreach($details as $d)
+
+<tr>
+
+<td>{{ $d->status }}</td>
+<td>{{ $d->sku }}</td>
+<td>{{ $d->skuData->name }}</td>
+<td>{{ $d->order_qty }}</td>
+<td>{{ $d->qty_allocated }}</td>
+<td>{{ $d->qty_picked }}</td>
+<td>{{ $d->qty_packed }}</td>
+
+</tr>
+
+@endforeach
+
+</table>
+
+<hr>
+
+<h3>Allocation Detail</h3>
+
+<table border="1">
+
+<tr>
+<th>SKU</th>
+<th>Location</th>
+<th>Allocated</th>
+<th>Picked</th>
+</tr>
+
+@foreach($allocations as $a)
+
+<tr>
+
+<td>{{ $a->outboundDetail->sku }}</td>
+<td>{{ $a->location }}</td>
+<td>{{ $a->qty_allocated }}</td>
+<td>{{ $a->qty_picked }}</td>
+
+</tr>
+
+@endforeach
+
+</table>

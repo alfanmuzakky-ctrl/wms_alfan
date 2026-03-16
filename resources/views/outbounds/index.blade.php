@@ -5,11 +5,11 @@
 
 <thead>
 <tr>
-    <th>ID Outbound</th>
-    <th>Customer</th>
-    <th>Status</th>
-    <th>Create Time</th>
-    <th>Action</th>
+<th>ID Outbound</th>
+<th>Customer</th>
+<th>Status</th>
+<th>Create Time</th>
+<th>Action</th>
 </tr>
 </thead>
 
@@ -18,16 +18,12 @@
 @foreach($outbounds as $outbound)
 
 <tr onclick="openDetail('outbounds','{{ $outbound->id }}')" 
-    class="row-hover"
-    style="cursor:pointer;">
+style="cursor:pointer;" 
+class="row-hover">
 
-<td class="font-bold">
-{{ $outbound->id }}
-</td>
+<td class="font-bold">{{ $outbound->id }}</td>
 
-<td>
-{{ $outbound->customer->name ?? $outbound->customer_id }}
-</td>
+<td>{{ $outbound->customer->name ?? $outbound->customer_id }}</td>
 
 <td>
 <span class="status-badge status-{{ strtolower($outbound->status) }}">
@@ -41,19 +37,13 @@
 
 <td onclick="event.stopPropagation();">
 
-@if($outbound->status != 'SHIPPED')
-
+@if($outbound->status !== 'CLOSE')
 <button class="btn-danger"
 onclick="closeOutbound('{{ $outbound->id }}')">
-Close Order
+Close
 </button>
-
 @else
-
-<span class="text-locked">
-Shipped
-</span>
-
+<span class="text-locked">Locked</span>
 @endif
 
 </td>
@@ -62,15 +52,12 @@ Shipped
 
 @endforeach
 
-
 @if($outbounds->isEmpty())
-
 <tr>
 <td colspan="5" style="text-align:center;padding:30px;">
-Belum ada data outbound
+Data outbound belum tersedia
 </td>
 </tr>
-
 @endif
 
 </tbody>

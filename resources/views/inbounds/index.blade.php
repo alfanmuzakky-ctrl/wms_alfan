@@ -14,9 +14,9 @@
 
         <tbody>
             @foreach($inbounds as $inbound)
-                <tr onclick="openDetail('inbounds', '{{ $inbound->id }}')" 
-                    style="cursor:pointer;" 
-                    class="row-hover">
+                    <tr onclick="openDetail('inbounds', '{{ $inbound->id }}')" 
+                        style="cursor:pointer;" 
+                        class="row-hover">
 
                     <td class="font-bold">{{ $inbound->id }}</td>
 
