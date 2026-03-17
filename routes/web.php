@@ -14,7 +14,7 @@ use App\Http\Controllers\PrintController;
 use App\Http\Controllers\InboundController;
 /* Global / Dashboard */
 Route::get('/', function () {
-    return view('dashboard');
+    return view('layouts');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index']);

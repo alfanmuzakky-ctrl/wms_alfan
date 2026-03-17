@@ -1,19 +1,14 @@
-
 /* Sidebar Section */
-
-// Fungsi : membuka sidebar
 function openSidebar() {
     const sidebar = document.getElementById('sidebar');
     if (sidebar) sidebar.classList.add('active');
 }
 
-// Fungsi : menutup sidebar
 function closeSidebar() {
     const sidebar = document.getElementById('sidebar');
     if (sidebar) sidebar.classList.remove('active');
 }
 
-// Fungsi : toggle dropdown menu di sidebar
 function toggleMenu(id) {
     const menu = document.getElementById(id);
     if (!menu) return;
@@ -21,8 +16,6 @@ function toggleMenu(id) {
 }
 
 /* Page Loader & Tabs */
-
-// Fungsi : load halaman ke mainContent via AJAX
 function loadPage(url) {
     fetch(url)
         .then(res => res.text())
@@ -33,8 +26,6 @@ function loadPage(url) {
         })
         .catch(err => console.error(err));
 }
-
-// Fungsi : Open Tab Navbar
 function openTab(url, title) {
     const tabsContainer = document.getElementById("tabsContainer");
 
@@ -44,7 +35,6 @@ function openTab(url, title) {
     if (existing) {
         activateTab(existing);
         loadPage(url);
-        closeDrawer();
         return;
     }
 
@@ -60,24 +50,18 @@ function openTab(url, title) {
     tab.onclick = function() {
         activateTab(tab);
         loadPage(url);
-        closeDrawer();
     };
 
     tabsContainer.appendChild(tab);
     activateTab(tab);
-    loadPage(url);  
-    closeDrawer();
+    loadPage(url);
 }
-
-// Tab Aktif
 function activateTab(tab) {
     document.querySelectorAll(".tab").forEach(t => {
         t.classList.remove("active");
     });
     tab.classList.add("active");
 }
-
-// Tutup Tab
 function closeTab(event, url) {
     event.stopPropagation();
     const tab = document.querySelector(`.tab[data-url="${url}"]`);
@@ -103,8 +87,6 @@ function closeTab(event, url) {
         loadPage('/dashboard');
     }
 }
-
-// Fungsi : load dashboard default
 function loadDashboard() {
     document.getElementById('mainContent').innerHTML = `
         <h1>Dashboard</h1>
@@ -114,15 +96,11 @@ function loadDashboard() {
 }
 
 /* Drawer Section */
-
-// Fungsi : menutup drawer
 function closeDrawer() {
     const drawer = document.getElementById('drawer');
     const content = document.getElementById('drawerContent');
 
     if (drawer) drawer.classList.remove('active');
-
-    // kosongkan isi setelah animasi
     if (content) {
         setTimeout(() => {
             content.innerHTML = '';
@@ -130,7 +108,6 @@ function closeDrawer() {
     }
 }
 
-// Fungsi : membuka detail data di drawer
 function openDetail(module, id) {
     const encodedId = encodeURIComponent(id);
     const drawer = document.getElementById('drawer');
@@ -148,7 +125,6 @@ function openDetail(module, id) {
 
 /* Generic Form Binder */
 
-// Fungsi : binding form create agar tidak double submit
 function bindForm(formId, url, method = 'POST') {
     const form = document.getElementById(formId);
     if (!form) return;
@@ -178,7 +154,6 @@ function bindForm(formId, url, method = 'POST') {
     });
 }
 
-// Fungsi : membuka form create di drawer
 function openCreate(module) {
     const drawer = document.getElementById('drawer');
     const content = document.getElementById('drawerContent');
@@ -192,7 +167,6 @@ function openCreate(module) {
         });
 }
 
-// Fungsi : binding edit form
 function openEdit() {
     const form = document.getElementById('editForm');
     if (!form) return;
@@ -226,47 +200,12 @@ function openEdit() {
 }
 
 /* Inbound Management */
-
-// Fungsi : submit form receive inbound
-document.addEventListener('submit', function(e) {
-    if (e.target.id !== 'receiveForm') return;
-    e.preventDefault();
-
-    const form = e.target;
-    const detailId = form.querySelector('[name="detail_id"]').value;
-    const inboundId = form.querySelector('[name="inbound_id"]').value;
-    const formData = new FormData(form);
-
-    fetch('/inbounds/' + detailId + '/receive', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-        alert(data.message);
-        if (data.success) {
-            openDetail('inbounds', inboundId);
-        }
-    });
-});
-
-// Fungsi : submit form add SKU ke inbound/outbound// Pastikan tidak ada duplikasi, hapus listener submit yang lama jika ada
 document.addEventListener('submit', function(e) {
     const form = e.target;
-    
-    // Hanya proses jika ini adalah addSkuForm
     if (form.id !== 'addSkuForm') return;
-    
     e.preventDefault();
-
-    const type = form.dataset.type; // Mengambil 'inbounds' atau 'outbounds'
-    
-    // Ambil ID dari input yang punya class 'target-id'
+    const type = form.dataset.type; 
     const idElement = form.querySelector('.target-id');
-    
     if (!type || !idElement) {
         console.error("Gagal: Atribut data-type atau class 'target-id' hilang!");
         return;
@@ -290,7 +229,7 @@ document.addEventListener('submit', function(e) {
         if (data.success) {
             alert(data.message);
             if (typeof openDetail === "function") {
-                openDetail(type, id); // Refresh otomatis
+                openDetail(type, id);
             }
         } else {
             alert("Gagal: " + data.message);
@@ -301,7 +240,6 @@ document.addEventListener('submit', function(e) {
 
 /* Putaway Section */
 
-// Fungsi : submit button custom tanpa reload halaman
 function submitButton(button) {
     const form = button.closest('form');
     const formData = new FormData(form);
@@ -464,88 +402,21 @@ function submitPutaway(inventoryId) {
 |--------------------------------------------------------------------------
 */
 
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
 /*
 |--------------------------------------------------------------------------
-| FORM SUBMIT (CREATE DATA)
+| ALLOCATE STOCK
 |--------------------------------------------------------------------------
 */
 
-const addForm = document.getElementById('addForm');
+function allocateOutbound(id){
 
-if(addForm){
-
-    addForm.addEventListener('submit', function(e){
-
-        e.preventDefault();
-
-        let formData = new FormData(this);
-
-        fetch(window.location.pathname,{
-            method:'POST',
-            headers:{
-                'X-CSRF-TOKEN':csrfToken
-            },
-            body:formData
-        })
-
-        .then(response => {
-
-            if(!response.ok){
-                throw new Error("Server Error");
-            }
-
-            return response.json();
-        })
-
-        .then(data=>{
-
-            if(data.success){
-
-                location.reload();
-
-            }else{
-
-                alert("Gagal menyimpan");
-
-            }
-
-        })
-
-        .catch(err=>{
-
-            console.error(err);
-            alert("Terjadi error server");
-
-        });
-
-    });
-
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| ADD SKU TO OUTBOUND
-|--------------------------------------------------------------------------
-*/
-
-function addSku(outboundId){
-
-    const sku = document.getElementById('sku_id').value;
-    const qty = document.getElementById('qty_order').value;
-
-    fetch('/outbound/add-sku',{
+    fetch(`/outbounds/${id}/allocate`,{
         method:'POST',
         headers:{
-            'Content-Type':'application/json',
             'X-CSRF-TOKEN':csrfToken
-        },
-        body:JSON.stringify({
-            outbound_id:outboundId,
-            sku_id:sku,
-            qty_order:qty
-        })
+        }
     })
 
     .then(res=>res.json())
@@ -553,6 +424,8 @@ function addSku(outboundId){
     .then(data=>{
 
         if(data.success){
+
+            alert('Stock Allocated');
 
             location.reload();
 
@@ -562,122 +435,159 @@ function addSku(outboundId){
 
 }
 
-function allocateOutbound(id){
 
-fetch('/outbounds/'+id+'/allocate',{
-method:'POST',
-headers:{
-'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content
-}
-}).then(()=>location.reload())
-
-}
+/*
+|--------------------------------------------------------------------------
+| PICKING
+|--------------------------------------------------------------------------
+*/
 
 function pickingOutbound(id){
 
-fetch('/outbounds/'+id+'/picking',{
-method:'POST',
-headers:{
-'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content
-}
-}).then(()=>location.reload())
+    fetch(`/outbounds/${id}/picking`,{
+        method:'POST',
+        headers:{
+            'X-CSRF-TOKEN':csrfToken
+        }
+    })
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        if(data.success){
+
+            alert('Picking selesai');
+
+            location.reload();
+
+        }
+
+    });
 
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| PACKING
+|--------------------------------------------------------------------------
+*/
 
 function packingOutbound(id){
 
-fetch('/outbounds/'+id+'/packing',{
-method:'POST',
-headers:{
-'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content
-}
-}).then(()=>location.reload())
+    fetch(`/outbounds/${id}/packing`,{
+        method:'POST',
+        headers:{
+            'X-CSRF-TOKEN':csrfToken
+        }
+    })
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        if(data.success){
+
+            alert('Packing selesai');
+
+            location.reload();
+
+        }
+
+    });
 
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| SHIP
+|--------------------------------------------------------------------------
+*/
 
 function shipOutbound(id){
 
-if(!confirm("Ship outbound ini?")) return;
+    if(!confirm("Kirim barang ini?")) return;
 
-fetch('/outbounds/'+id+'/ship',{
+    fetch(`/outbounds/${id}/ship`,{
+        method:'POST',
+        headers:{
+            'X-CSRF-TOKEN':csrfToken
+        }
+    })
 
-method:'POST',
+    .then(res=>res.json())
 
-headers:{
-'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content
+    .then(data=>{
+
+        if(data.success){
+
+            alert('Shipment berhasil');
+
+            location.reload();
+
+        }
+
+    });
+
 }
 
-})
-.then(()=>location.reload())
 
-}
 
 // ================================
-// PACKING CHECK MODULE
+// GLOBAL
 // ================================
 
-window.outboundId = null;
-
-
-// ambil csrf token
-function csrfToken()
-{
-    let meta = document.querySelector('meta[name="csrf-token"]')
-    return meta ? meta.getAttribute('content') : ''
-}
-
+let outboundId = null;
 
 
 // ================================
 // LOAD ORDER
 // ================================
 
-window.loadOrder = function()
-{
+function loadOrder(){
 
-    let input = document.getElementById("outboundInput")
+    const input = document.getElementById("outboundInput");
 
-    if(!input)
-    {
-        console.log("outboundInput tidak ditemukan")
-        return
+    if(!input){
+        console.log("outboundInput tidak ditemukan");
+        return;
     }
 
-    outboundId = input.value
+    outboundId = input.value;
 
-    if(!outboundId)
-    {
-        alert("Scan Outbound ID dulu")
-        return
+    if(!outboundId){
+        alert("Scan Outbound ID dulu");
+        return;
     }
 
     fetch('/packing-check/load-order',{
         method:'POST',
         headers:{
             'Content-Type':'application/json',
-            'X-CSRF-TOKEN': csrfToken()
+            'X-CSRF-TOKEN': csrfToken
         },
         body: JSON.stringify({
             outbound_id: outboundId
         })
     })
-    .then(r=>r.json())
-    .then(data=>{
 
-        if(data.error)
-        {
-            alert(data.error)
-            return
+    .then(r => r.json())
+
+    .then(data => {
+
+        if(data.error){
+            alert(data.error);
+            return;
         }
 
-        let table = document.querySelector("#orderTable tbody")
+        const table = document.querySelector("#orderTable tbody");
+        if(!table) return;
 
-        if(!table) return
+        table.innerHTML = "";
 
-        table.innerHTML = ""
-
-        data.details.forEach(d=>{
+        data.details.forEach(d => {
 
             table.innerHTML += `
             <tr>
@@ -687,152 +597,159 @@ window.loadOrder = function()
                     ${d.qty_packed}
                 </td>
             </tr>
-            `
+            `;
 
-        })
+        });
 
-        let skuInput = document.getElementById("skuInput")
-        if(skuInput) skuInput.focus()
+        const skuInput = document.getElementById("skuInput");
+        if(skuInput) skuInput.focus();
 
-    })
+    });
 
 }
-
 
 
 // ================================
 // SCAN SKU
 // ================================
 
-window.scanSku = function()
-{
+function scanSku(){
 
-    let input = document.getElementById("skuInput")
+    const input = document.getElementById("skuInput");
+    if(!input) return;
 
-    if(!input) return
+    const sku = input.value;
 
-    let sku = input.value
-
-    if(!sku)
-    {
-        alert("Scan SKU dulu")
-        return
+    if(!sku){
+        alert("Scan SKU dulu");
+        return;
     }
 
     fetch('/packing-check/scan-sku',{
         method:'POST',
         headers:{
             'Content-Type':'application/json',
-            'X-CSRF-TOKEN': csrfToken()
+            'X-CSRF-TOKEN': csrfToken
         },
         body: JSON.stringify({
             outbound_id: outboundId,
             sku: sku
         })
     })
-    .then(r=>r.json())
-    .then(data=>{
 
-        if(data.error)
-        {
-            alert(data.error)
-            return
+    .then(r => r.json())
+
+    .then(data => {
+
+        if(data.error){
+            alert(data.error);
+            return;
         }
 
-        let cell = document.getElementById("packed-"+data.sku)
+        const cell = document.getElementById("packed-" + data.sku);
 
-        if(cell)
-        {
-            cell.innerText = data.qty_packed
+        if(cell){
+            cell.innerText = data.qty_packed;
         }
 
-        input.value=""
-        input.focus()
+        input.value = "";
+        input.focus();
 
-    })
+    });
 
 }
-
 
 
 // ================================
 // CONFIRM PACK
 // ================================
 
-window.confirmPack = function()
-{
+function confirmPack(){
 
-    if(!outboundId)
-    {
-        alert("Load order dulu")
-        return
+    if(!outboundId){
+        alert("Load order dulu");
+        return;
     }
 
-    if(!confirm("Yakin packing selesai?"))
-    {
-        return
+    if(!confirm("Yakin packing selesai?")){
+        return;
     }
 
     fetch('/packing-check/confirm-pack',{
         method:'POST',
         headers:{
             'Content-Type':'application/json',
-            'X-CSRF-TOKEN': csrfToken()
+            'X-CSRF-TOKEN': csrfToken
         },
         body: JSON.stringify({
             outbound_id: outboundId
         })
     })
-    .then(r=>r.json())
-    .then(data=>{
 
-        if(data.error)
-        {
-            alert(data.error)
-            return
+    .then(r => r.json())
+
+    .then(data => {
+
+        if(data.error){
+            alert(data.error);
+            return;
         }
 
-        alert("Packing selesai")
+        alert("Packing selesai");
 
-        location.reload()
+        location.reload();
 
-    })
+    });
 
 }
 
 
-function submitAction(url, module, id, payload = {})
-{
+// ================================
+// EXPORT TO WINDOW
+// ================================
 
-fetch(url, {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-    },
-    body: JSON.stringify(payload)
-})
-.then(res => res.json())
-.then(data => {
+window.loadOrder = loadOrder;
+window.scanSku = scanSku;
+window.confirmPack = confirmPack;
 
-    if (data.success) {
+// ================================
+// GENERIC SUBMIT ACTION
+// ================================
 
-        // refresh drawer
-        openDetail(module, id);
+function submitAction(url, module, id, payload = {}){
 
-    } else {
+    fetch(url,{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+            'Accept':'application/json',
+            'X-CSRF-TOKEN': csrfToken()
+        },
+        body: JSON.stringify(payload)
+    })
 
-        alert("Gagal: " + data.message);
+    .then(res=>res.json())
 
-    }
+    .then(data=>{
 
-})
-.catch(err => {
+        if(data.success){
 
-    console.error("Error:", err);
-    alert("Server error");
+            // refresh drawer
+            openDetail(module, id);
 
-});
+        }else{
 
-}   
+            alert("Gagal: " + data.message);
+
+        }
+
+    })
+
+    .catch(err=>{
+
+        console.error("Error:", err);
+        alert("Server error");
+
+    });
+
+}

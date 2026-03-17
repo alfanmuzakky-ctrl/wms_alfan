@@ -26,7 +26,7 @@
         </div>
 
         <nav class="sidebar-nav">
-            <a onclick="openTab('/dashboard', 'Dashboard')" class="nav-item">Dashboard</a>
+            <a onclick="openTab('/dashboard', 'Dashboard')">Dashboard</a>
 
             <div class="nav-group">
                 <a onclick="toggleMenu('basic')" class="nav-dropdown">Basic Setup <span class="arrow">▾</span></a>
@@ -60,18 +60,16 @@
     </div>
 
     <main class="content">
-        <div id="mainContent" class="work-area">
-            <div class="welcome-card">
-                <h1>Dashboard Overview</h1>
-                <p>Selamat datang di sistem manajemen gudang Niaga. Pilih menu di samping untuk memulai.</p>
-            </div>
-        </div>
+    <div id="mainContent" class="work-area">
+        Loading...
+    </div>
+</main>
 
         <div id="drawer" class="drawer">
             <div class="toolbar">
                 <button class="drawer-close" onclick="closeDrawer()">✕ Close</button>
             </div>    
-            
+                
             <div id="drawerContent" class="drawer-body">
                 </div>
         </div>
