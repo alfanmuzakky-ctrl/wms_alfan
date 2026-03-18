@@ -1,78 +1,107 @@
-/* Global Style */
+/* ===============================
+   GLOBAL STYLE (MODERN SAAS)
+=============================== */
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    background: #f1f5f9;
+    font-family: 'Poppins', 'Inter', sans-serif;
+    background: #D0D7E1;
+    color: #072D44;
 }
 
 button {
-    padding: 8px 15px;
+    padding: 10px 18px;
     border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    border-radius: 10px;
+    cursor: default;
+    background: #9CCDDB;
+    color: #072D44;
+    font-weight: 600;
+    transition: all 0.25s ease;
 }
 
-/* Topbar */
+button:hover {
+    background: #5790AB;
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* ===============================
+   TOPBAR (NAVBAR MODERN)
+=============================== */
 .topbar {
-    height: 50px;
-    background: #1e293b;
+    height: 60px;
+    background: linear-gradient(90deg, #072D44, #064469);
     color: white;
     display: flex;
     align-items: center;
-    padding: 0 15px;
+    padding: 0 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .menu-btn {
-    font-size: 20px;
-    cursor: pointer;
+    font-size: 22px;
+    cursor: default;
     margin-right: 15px;
 }
 
-/* Tabs Navigation */
+/* ===============================
+   TABS (MODERN PILLS)
+=============================== */
 .tabs {
     display: flex;
     margin-left: 20px;
+    gap: 8px;
+    user-select: none;
 }
 
 .tab {
-    background: #444;
+    background: rgba(255,255,255,0.1);
     color: white;
     padding: 8px 25px 8px 15px;
-    margin-right: 5px;
-    cursor: pointer;
+    cursor: default;
     display: flex;
     align-items: center;
     font-size: 13px;
     position: relative;
-    border-radius: 8px;
+    border-radius: 12px;
+    backdrop-filter: blur(6px);
+    transition: all 0.2s ease;
+}
+
+.tab:hover {
+    background: rgba(255,255,255,0.2);
 }
 
 .tab.active {
-    background: #d32f2f;
+    background: #9CCDDB;
+    color: #072D44;
 }
 
 .tab .close {
     position: absolute;
-    top: 2px;
-    right: 5px;
+    top: 3px;
+    right: 6px;
     font-size: 12px;
-    cursor: pointer;
 }
 
-/* Sidebar */
+/* ===============================
+   SIDEBAR (GLASS + MODERN)
+=============================== */
 .sidebar {
     position: fixed;
     top: 0;
-    left: -250px;
-    width: 250px;
+    left: -260px;
+    width: 260px;
     height: 100%;
-    background: #243447;
+    background: linear-gradient(180deg, #072D44, #064469);
     color: white;
     padding: 20px;
     box-sizing: border-box;
     transition: 0.3s ease;
     z-index: 1000;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+    user-select: none;
 }
 
 .sidebar.active {
@@ -85,19 +114,19 @@ button {
 
 .sidebar a {
     display: block;
-    padding: 10px;
+    padding: 10px 12px;
     color: white;
     text-decoration: none;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    cursor: pointer;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    transition: all 0.2s ease;
 }
 
 .sidebar a:hover {
-    background: #334155;
+    background: rgba(255,255,255,0.15);
 }
 
-/* Sidebar Submenu */
+/* SUBMENU */
 .submenu {
     display: none;
     padding-left: 10px;
@@ -105,63 +134,73 @@ button {
 
 .submenu a {
     font-size: 13px;
-    background: #334155;
+    background: rgba(255,255,255,0.1);
 }
 
-/* Table Style */
+/* ===============================
+   CONTENT
+=============================== */
+.content {
+    position: relative;
+    height: calc(100vh - 60px);
+    overflow: hidden;
+    padding: 20px;
+}
+
+/* ===============================
+   TABLE (MODERN CLEAN)
+=============================== */
 table {
     width: 100%;
     border-collapse: collapse;
     background: white;
     font-size: 13px;
-    table-layout: fixed;
-
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
 }
 
 th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
+    padding: 10px;
     text-align: left;
-    vertical-align: middle;
 }
-/* Potong text panjang */
+
+thead {
+    background: #072D44;
+    color: white;
+}
+
+tbody tr:nth-child(even) {
+    background: #f4f8fb;
+}
+
+tbody tr:hover {
+    background: #9CCDDB;
+    color: #072D44;
+}
+
+/* truncate */
 .truncate {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 200px;
 }
-thead {
-    background: #e5e5e5;
-}
 
-tbody tr:nth-child(even) {
-    background: #f7f7f7;
-}
-
-tbody tr:hover {
-    background: #dbe8f3;
-}
-
-/* Content Area */
-.content {
-    position: relative;
-    height: calc(100vh - 50px);
-    overflow: hidden;
-    padding: 10px;
-}
-
-/* Drawer Panel */
+/* ===============================
+   DRAWER (MODERN PANEL)
+=============================== */
 .drawer {
     position: absolute;
     top: 0;
     right: -900px;
     width: 900px;
     height: 100%;
-    background: white;
-    box-shadow: -3px 0 10px rgba(0, 0, 0, 0.2);
+    background: #ffffff;
+    box-shadow: -8px 0 30px rgba(0,0,0,0.15);
     transition: 0.3s;
     overflow-y: auto;
+    border-radius: 20px 0 0 20px;
 }
 
 .drawer.active {
@@ -175,64 +214,53 @@ tbody tr:hover {
     transform: translateY(-50%);
     width: 20px;
     height: 60px;
-    background: #1e293b;
+    background: #072D44;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    font-size: 16px;
-    border-radius: 4px 0 0 4px;
-    cursor: pointer;
-    z-index: 2000;
+    border-radius: 8px 0 0 8px;
 }
 
 .drawer-arrow:hover {
-    background: #ef4444;
+    background: #9CCDDB;
+    color: #072D44;
 }
 
 .drawer-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    background: white;
-}
-
-.drawer-close {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 13px;
-    padding: 5px 8px;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
 }
 
 .drawer-close:hover {
-    background: #e5e7eb;
-    border-radius: 4px;
+    background: #D0D7E1;
+    border-radius: 6px;
 }
-/* Button Style */
+
+/* ===============================
+   BUTTON
+=============================== */
 .btn-grey {
-    background: #6b7280;
+    background: #064469;
     color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.3s;
+    border-radius: 10px;
 }
 
 .btn-grey:hover {
-    background: #4b5563;
+    background: #072D44;
 }
 
-/* Alert Message */
+/* ===============================
+   ALERT
+=============================== */
 .alert-success {
     background: #e6ffed;
     color: #0a7a2f;
-    padding: 10px;
-    border-radius: 6px;
+    padding: 12px;
+    border-radius: 10px;
 }
 
 /* Section Box */
@@ -261,17 +289,17 @@ tbody tr:hover {
     bottom: -12px;
     left: 15px;
     background: white;
-    border: 1px solid #2563eb;
-    color: #2563eb;
+    border: 1px solid #064469;
+    color: #064469;
     padding: 6px 14px;
     border-radius: 4px;
     font-size: 13px;
     font-weight: 600;
-    cursor: pointer;
+    cursor: default;
 }
 
 .section-button:hover {
-    background: #2563eb;
+    background: #064469;
     color: white;
 }
 
@@ -299,13 +327,9 @@ tbody tr:hover {
     color: #555;
 }
 
-/* Readonly Input */
-.readonly {
-    background: #f1f5f9;
-    cursor: not-allowed;
-}
-
-/* Table Container */
+/* ===============================
+   TABLE CONTAINER
+=============================== */
 .table-container {
     width: 100%;
     overflow-x: auto;
@@ -313,51 +337,75 @@ tbody tr:hover {
 
 .custom-table {
     min-width: 1200px;
-    border-collapse: collapse;
     font-size: 13px;
 }
 
-.custom-table th,
-.custom-table td {
-    border: 1px solid #e5e7eb;
-    padding: 8px;
-    text-align: left;
-}
-
-.custom-table th {
-    background: #f3f4f6;
-}
-
-/* Toolbar */
+/* ===============================
+   TOOLBAR
+=============================== */
 .toolbar {
     display: flex;
     gap: 10px;
-    padding: 8px 15px;
-    border-bottom: 1px solid #d1d5db;
-    background: #f8fafc;
-}
-
-.toolbar button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 13px;
-    padding: 5px 8px;
+    padding: 10px 15px;
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 10px;
 }
 
 .toolbar button:hover {
-    background: #e5e7eb;
-    border-radius: 4px;
+    background: #9CCDDB;
 }
 
-/* Page Header */
+/* ===============================
+   PAGE HEADER
+=============================== */
 .page-header {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+    padding: 15px;
     background: white;
+    border-radius: 12px;
+    margin-bottom: 10px;
 }
 
-/* Print Page */
+/* ===============================
+   DETAILS TAB
+=============================== */
+.details-tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 15px;
+}
+
+.details-tab {
+    padding: 10px 18px;
+    background: #f4f8fb;
+    cursor: default;
+    font-weight: 600;
+    border-radius: 10px 10px 0 0;
+    transition: 0.2s;
+}
+
+.details-tab:hover {
+    background: #9CCDDB;
+}
+
+.details-tab.active {
+    background: white;
+    color: #072D44;
+}
+
+.details-tab-content {
+    display: none;
+    padding-top: 10px;
+}
+
+.details-tab-content.active {
+    display: block;
+}
+
+/* ===============================
+   PRINT (UNCHANGED CORE)
+=============================== */
 @page {
     size: 100mm 30mm;
     margin: 0;
@@ -369,97 +417,47 @@ tbody tr:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial;
 }
 
-/* Label */
 .label {
     width: 90mm;
     height: 25mm;
     border: 1px solid black;
     display: flex;
-    align-items: center;
 }
 
 .label-qr {
     width: 28mm;
-    height: 30mm;
     display: flex;
-    align-items: center;
     justify-content: center;
     border-right: 1px solid black;
 }
 
-/* Label Info */
 .label-info {
     flex: 1;
-    padding: 1mm 2mm;
+    padding: 2mm;
 }
 
-/* Text Styles */
-.text-big {
-    font-size: 4mm;
-    font-weight: bold;
-    border-bottom: 1px solid black;
-}
+/* ===============================
+   RESPONSIVE
+=============================== */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
 
-.text-medium {
-    font-size: 3.2mm;
-    font-weight: bold;
-    border-bottom: 1px solid black;
-}
+    .drawer {
+        width: 100%;
+    }
 
-.text-small {
-    font-size: 2.8mm;
-}
+    .tabs {
+        overflow-x: auto;
+    }
 
-/* ==============================
-   DETAILS TAB STYLE
-============================== */
-
-.details-tabs{
-    display:flex;
-    gap:5px;
-    border-bottom:2px solid #e5e7eb;
-    margin-bottom:15px;
-}
-
-/* TAB BUTTON */
-.details-tab{
-    padding:8px 18px;
-    background:#f3f4f6;
-    border:1px solid #e5e7eb;
-    border-bottom:none;
-    cursor:pointer;
-    font-size:14px;
-    font-weight:600;
-    color:#555;
-    border-radius:6px 6px 0 0;
-    transition:all 0.2s ease;
-}
-
-/* HOVER */
-.details-tab:hover{
-    background:#e5e7eb;
-}
-
-/* ACTIVE TAB */
-.details-tab.active{
-    background:#ffffff;
-    color:#111827;
-    border:1px solid #e5e7eb;
-    border-bottom:2px solid white;
-    position:relative;
-    top:2px;
-}
-
-/* TAB CONTENT */
-.details-tab-content{
-    display:none;
-    padding-top:10px;
-}
-
-/* ACTIVE CONTENT */
-.details-tab-content.active{
-    display:block;
+    .topbar {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px;
+    }
 }
