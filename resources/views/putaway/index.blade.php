@@ -24,16 +24,18 @@
             <td>
                 <select id="dest_{{ $item->id }}" required>
                     <option value="">-- Pilih Lokasi --</option>
-                    @foreach($locations as $loc)
+                    
+                    @foreach($locations->whereIn('location_attribute', ['Active', 'Quarantine']) as $loc)
                         <option value="{{ $loc->id }}">{{ $loc->id }}</option>
                     @endforeach
+
                 </select>
             </td>
             <td>
                 <button type="button" 
                         class="btn-primary" 
                         onclick="submitPutaway('{{ $item->id }}')">
-                    Execute
+                    Putaway
                 </button>
             </td>
         </tr>

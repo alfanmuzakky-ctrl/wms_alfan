@@ -8,7 +8,7 @@
     
     <link rel="stylesheet" href="{{ asset('css/wms.css') }}">
 </head>
-<body>
+<body onload="openTab('/dashboard', 'Dashboard')">
 
     <div class="topbar">
         <div class="topbar-left">

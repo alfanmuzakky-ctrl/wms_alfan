@@ -159,7 +159,9 @@ table {
     overflow: hidden;
     box-shadow: 0 8px 25px rgba(0,0,0,0.05);
 }
-
+.table-container {
+    overflow-x: auto;
+}
 th, td {
     padding: 10px;
     text-align: left;
@@ -191,7 +193,7 @@ tbody tr:hover {
    DRAWER (MODERN PANEL)
 =============================== */
 .drawer {
-    position: absolute;
+    position: fixed;
     top: 0;
     right: -900px;
     width: 900px;
@@ -336,7 +338,7 @@ tbody tr:hover {
 }
 
 .custom-table {
-    min-width: 1200px;
+    width: 100%;
     font-size: 13px;
 }
 
@@ -460,4 +462,112 @@ tbody tr:hover {
         height: auto;
         padding: 10px;
     }
+}
+
+/* ===============================
+   DASHBOARD FIX FINAL
+=============================== */
+.dashboard {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px;
+    overflow-x: hidden;
+}
+
+/* GRID 4 */
+.grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+/* GRID 2 */
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+/* CARD */
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    width: 100%;
+}
+
+/* TEXT */
+.card span {
+    font-size: 12px;
+    color: #666;
+}
+
+.card h3 {
+    margin: 5px 0;
+    font-size: 22px;
+}
+
+.card h4 {
+    margin-bottom: 10px;
+}
+
+/* PROGRESS */
+.progress-bar {
+    height: 10px;
+    background: #eee;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+}
+
+.blue { background: #064469; }
+.green { background: #2ecc71; }
+.orange { background: #f39c12; }
+
+/* BADGE */
+.badge {
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 11px;
+}
+
+.badge-create { background: #dbeafe; color: #1d4ed8; }
+.badge-received { background: #dcfce7; color: #166534; }
+.badge-shipped { background: #dcfce7; color: #166534; }
+.badge-packed { background: #fef3c7; color: #92400e; }
+
+/* 🔥 RESPONSIVE (INI KUNCINYA) */
+@media (max-width: 900px) {
+    /* GRID 4 (AUTO RESPONSIVE) */
+.grid-4 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+/* GRID 2 (AUTO RESPONSIVE) */
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+}
+
+@media (max-width: 500px) {
+    .grid-4 {
+        grid-template-columns: 1fr;
+    }
+}
+
+* {
+    box-sizing: border-box;
 }

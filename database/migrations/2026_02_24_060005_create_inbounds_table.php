@@ -14,7 +14,7 @@ return new class extends Migration
 
             $table->enum('status', [
                 'CREATE',
-                'PARTIALLY_RECEIVED',
+                'PARTIAL',
                 'RECEIVED',
                 'CLOSE'
             ])->default('CREATE');
