@@ -9,128 +9,163 @@ use App\Models\OutboundDetail;
 class PackingCheckController extends Controller
 {
 
-/*
-HALAMAN PACKING CHECK
-*/
+    /*
+    📦 HALAMAN PACKING CHECK
+    */
+    public function index()
+    {
+        $outboundId = request('outbound');
+        $outbound = null;
 
-public function index()
+        if ($outboundId) {
+            $outbound = Outbound::with('details')->find($outboundId);
+        }
+
+        return view('packing_check.index', compact('outbound'));
+    }
+
+
+    /*
+    🔍 LOAD ORDER SAAT SCAN OUTBOUND
+    */
+    public function loadOrder(Request $request)
+    {
+        $outbound = Outbound::with('details')
+            ->where('id', $request->outbound_id)
+            ->first();
+
+        if (!$outbound) {
+            return response()->json([
+                'error' => 'Outbound tidak ditemukan'
+            ]);
+        }
+
+        return response()->json($outbound);
+    }
+
+
+    /*
+    📦 SCAN SKU (PACKING)
+    */
+    public function scanSku(Request $request)
 {
+    $detail = OutboundDetail::where('outbound_id', $request->outbound_id)
+        ->where('sku', $request->sku)
+        ->first();
 
-$outboundId = request('outbound');
+    if (!$detail) {
+        return response()->json([
+            'error' => 'SKU tidak ada di order'
+        ]);
+    }
 
-$outbound = null;
+    // 🔥 ambil qty dari frontend
+    $qty = $request->qty ?? 1;
 
-if($outboundId)
-{
-$outbound = Outbound::with('details')->find($outboundId);
+    /*
+    🔒 Tentukan batas maksimal packing
+    */
+    $maxQty = $detail->qty_picked ?? $detail->qty_allocated ?? 0;
+
+    /*
+    🔒 VALIDASI: belum picking
+    */
+    if ($maxQty <= 0) {
+        return response()->json([
+            'error' => 'Barang belum dipicking'
+        ]);
+    }
+
+    /*
+    🔒 VALIDASI: tidak boleh lebih dari picking
+    */
+    if ($detail->qty_packed + $qty > $maxQty) {
+        return response()->json([
+            'error' => 'Qty melebihi qty picking'
+        ]);
+    }
+
+    /*
+    🔒 VALIDASI: tidak boleh lebih dari order
+    */
+    if ($detail->qty_packed + $qty > $detail->order_qty) {
+        return response()->json([
+            'error' => 'Qty melebihi order'
+        ]);
+    }
+
+    /*
+    ✅ TAMBAH QTY PACKED (SESUSAI INPUT)
+    */
+    $detail->qty_packed += $qty;
+
+    /*
+    🔄 UPDATE STATUS
+    */
+    if ($detail->qty_packed == $maxQty) {
+        $detail->status = 'PACKED';
+    } else {
+        $detail->status = 'PARTIAL';
+    }
+
+    $detail->save();
+
+    return response()->json([
+        'sku'         => $detail->sku,
+        'qty_packed'  => $detail->qty_packed,
+        'order_qty'   => $detail->order_qty,
+        'max_qty'     => $maxQty,
+        'status'      => $detail->status
+    ]);
 }
 
-return view('packing_check.index',compact('outbound'));
 
-}
+    /*
+    ✅ CONFIRM PACKING
+    */
+    public function confirmPack(Request $request)
+    {
+        $outbound = Outbound::with('details')->find($request->outbound_id);
 
+        if (!$outbound) {
+            return response()->json([
+                'error' => 'Outbound tidak ditemukan'
+            ]);
+        }
 
-/*
-LOAD ORDER SAAT SCAN OUTBOUND
-*/
+        foreach ($outbound->details as $detail) {
 
-public function loadOrder(Request $request)
-{
+            /*
+            🔒 VALIDASI: tidak boleh kurang dari order
+            */
+            if ($detail->qty_packed != $detail->order_qty) {
+                return response()->json([
+                    'error' => 'Masih ada SKU yang belum lengkap'
+                ]);
+            }
 
-$outbound = Outbound::with('details')
-->where('id',$request->outbound_id)
-->first();
+            /*
+            🔒 VALIDASI: tidak boleh lebih dari picking
+            */
+            if ($detail->qty_packed > ($detail->qty_picked ?? 0)) {
+                return response()->json([
+                    'error' => 'Qty packing melebihi qty picking'
+                ]);
+            }
 
-if(!$outbound)
-{
-return response()->json([
-'error'=>'Outbound tidak ditemukan'
-]);
-}
+            $detail->status = 'PACKED';
+            $detail->save();
+        }
 
-return response()->json($outbound);
+        /*
+        🔄 UPDATE STATUS OUTBOUND
+        */
+        $outbound->status = 'PACKED';
+        $outbound->save();
 
-}
-
-
-/*
-SCAN SKU
-*/
-
-public function scanSku(Request $request)
-{
-
-$detail = OutboundDetail::where('outbound_id',$request->outbound_id)
-->where('sku',$request->sku)
-->first();
-
-if(!$detail)
-{
-return response()->json([
-'error'=>'SKU tidak ada di order'
-]);
-}
-
-/*
-TAMBAH QTY PACKED
-*/
-
-if($detail->qty_packed < $detail->order_qty)
-{
-
-$detail->qty_packed += 1;
-
-$detail->save();
-
-}
-
-return response()->json([
-'sku'=>$detail->sku,
-'qty_packed'=>$detail->qty_packed,
-'order_qty'=>$detail->order_qty
-]);
-
-}
-
-
-/*
-CONFIRM PACKING
-*/
-
-public function confirmPack(Request $request)
-{
-
-$outbound = Outbound::with('details')->find($request->outbound_id);
-
-if(!$outbound)
-{
-return response()->json(['error'=>'Outbound tidak ditemukan']);
-}
-
-foreach($outbound->details as $detail)
-{
-
-if($detail->qty_packed != $detail->order_qty)
-{
-return response()->json([
-'error'=>'Masih ada SKU yang belum lengkap'
-]);
-}
-
-$detail->status = 'PACKED';
-
-$detail->save();
-
-}
-
-$outbound->status = 'PACKED';
-
-$outbound->save();
-
-return response()->json([
-'success'=>'Packing selesai'
-]);
-
-}
+        return response()->json([
+            'success' => 'Packing selesai'
+        ]);
+    }
 
 }

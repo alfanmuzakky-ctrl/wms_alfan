@@ -23,9 +23,11 @@ function loadPage(url) {
             const main = document.getElementById('mainContent');
             if (main) main.innerHTML = data;
             closeSidebar(); // otomatis tutup sidebar
+            initPackingEvent();
         })
         .catch(err => console.error(err));
 }
+
 function openTab(url, title) {
     const tabsContainer = document.getElementById("tabsContainer");
 
@@ -538,9 +540,7 @@ function shipOutbound(id){
 // ================================
 // GLOBAL
 // ================================
-
-let outboundId = null;
-
+let isConfirming = false;
 
 // ================================
 // LOAD ORDER
@@ -555,7 +555,7 @@ function loadOrder(){
         return;
     }
 
-    outboundId = input.value;
+    const outboundId = input.value.trim();
 
     if(!outboundId){
         alert("Scan Outbound ID dulu");
@@ -572,9 +572,7 @@ function loadOrder(){
             outbound_id: outboundId
         })
     })
-
     .then(r => r.json())
-
     .then(data => {
 
         if(data.error){
@@ -588,7 +586,6 @@ function loadOrder(){
         table.innerHTML = "";
 
         data.details.forEach(d => {
-
             table.innerHTML += `
             <tr>
                 <td>${d.sku}</td>
@@ -598,14 +595,15 @@ function loadOrder(){
                 </td>
             </tr>
             `;
-
         });
 
         const skuInput = document.getElementById("skuInput");
         if(skuInput) skuInput.focus();
-
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error load order");
     });
-
 }
 
 
@@ -616,13 +614,29 @@ function loadOrder(){
 function scanSku(){
 
     const input = document.getElementById("skuInput");
+    const qtyInput = document.getElementById("qtyInput");
+    const enableQty = document.getElementById("enableQty");
+
     if(!input) return;
 
-    const sku = input.value;
+    const sku = input.value.trim();
 
     if(!sku){
         alert("Scan SKU dulu");
         return;
+    }
+
+    const outboundInput = document.getElementById("outboundInput");
+    const outboundId = outboundInput ? outboundInput.value.trim() : null;
+
+    if(!outboundId){
+        alert("Scan outbound dulu");
+        return;
+    }
+
+    let qty = 1;
+    if(enableQty && enableQty.checked){
+        qty = parseInt(qtyInput.value) || 1;
     }
 
     fetch('/packing-check/scan-sku',{
@@ -633,12 +647,11 @@ function scanSku(){
         },
         body: JSON.stringify({
             outbound_id: outboundId,
-            sku: sku
+            sku: sku,
+            qty: qty
         })
     })
-
     .then(r => r.json())
-
     .then(data => {
 
         if(data.error){
@@ -650,11 +663,32 @@ function scanSku(){
 
         if(cell){
             cell.innerText = data.qty_packed;
+
+            const row = cell.closest("tr");
+            row.style.backgroundColor = "#d4edda";
+
+            setTimeout(() => {
+                row.style.backgroundColor = "";
+            }, 500);
         }
 
+        // 🔥 AUTO CONFIRM
+        checkAutoConfirm();
+
+        // 🔄 RESET INPUT
         input.value = "";
         input.focus();
 
+        if(enableQty && enableQty.checked){
+            qtyInput.value = "";
+        }else{
+            qtyInput.value = 1;
+        }
+
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Terjadi error koneksi");
     });
 
 }
@@ -663,15 +697,40 @@ function scanSku(){
 // ================================
 // CONFIRM PACK
 // ================================
+function checkAutoConfirm(){
 
+    if(isConfirming) return;
+
+    const rows = document.querySelectorAll("#orderTable tbody tr");
+
+    if(rows.length === 0) return;
+
+    let allComplete = true;
+
+    rows.forEach(row => {
+
+        const orderQty = parseInt(row.children[1].textContent.trim()) || 0;
+const packedQty = parseInt(row.children[2].textContent.trim()) || 0;
+
+        if(packedQty < orderQty){
+            allComplete = false;
+        }
+
+    });
+
+    if(allComplete){
+        isConfirming = true;
+        confirmPack();
+    }
+
+}
 function confirmPack(){
+
+    const outboundInput = document.getElementById("outboundInput");
+    const outboundId = outboundInput ? outboundInput.value.trim() : null;
 
     if(!outboundId){
         alert("Load order dulu");
-        return;
-    }
-
-    if(!confirm("Yakin packing selesai?")){
         return;
     }
 
@@ -685,23 +744,25 @@ function confirmPack(){
             outbound_id: outboundId
         })
     })
-
     .then(r => r.json())
-
     .then(data => {
 
         if(data.error){
             alert(data.error);
+            isConfirming = false;
             return;
         }
 
         alert("Packing selesai");
+        loadPage('/packing-check');
 
-        location.reload();
-
+    })
+    .catch(err => {
+        console.error(err);
+        isConfirming = false;
     });
-
 }
+
 
 
 // ================================
@@ -716,40 +777,99 @@ window.confirmPack = confirmPack;
 // GENERIC SUBMIT ACTION
 // ================================
 
-function submitAction(url, module, id, payload = {}){
+function submitAction(url, module, id, payload = {})
+{
 
-    fetch(url,{
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json',
-            'Accept':'application/json',
-            'X-CSRF-TOKEN': csrfToken()
-        },
-        body: JSON.stringify(payload)
-    })
+fetch(url, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+    },
+    body: JSON.stringify(payload)
+})
+.then(res => res.json())
+.then(data => {
 
-    .then(res=>res.json())
+    if (data.success) {
 
-    .then(data=>{
+        // refresh drawer
+        openDetail(module, id);
 
-        if(data.success){
+    } else {
 
-            // refresh drawer
-            openDetail(module, id);
+        alert("Gagal: " + data.message);
 
-        }else{
+    }
 
-            alert("Gagal: " + data.message);
+})
+.catch(err => {
 
-        }
+    console.error("Error:", err);
+    alert("Server error");
 
-    })
+});
 
-    .catch(err=>{
+}   
 
-        console.error("Error:", err);
-        alert("Server error");
+function initPackingEvent(){
 
-    });
+    const outboundInput = document.getElementById('outboundInput');
+    const skuInput = document.getElementById('skuInput');
+    const qtyInput = document.getElementById('qtyInput');
+    const enableQty = document.getElementById('enableQty');
+
+    // autofocus outbound saat load
+    if(outboundInput){
+        outboundInput.focus();
+    }
+
+    // 🔥 HANDLE ENTER DI SKU
+    if(skuInput){
+        skuInput.addEventListener('keypress', function(e){
+
+            if(e.key === 'Enter'){
+                e.preventDefault();
+
+                if(enableQty && enableQty.checked){
+                    // 👉 pindah ke input qty
+                    if(qtyInput){
+                        qtyInput.focus();
+                        qtyInput.select();
+                    }
+                }else{
+                    // 👉 langsung scan
+                    scanSku();
+                }
+            }
+
+        });
+    }
+
+    // 🔥 HANDLE ENTER DI QTY
+    if(qtyInput){
+        qtyInput.addEventListener('keypress', function(e){
+
+            if(e.key === 'Enter'){
+                e.preventDefault();
+                scanSku();
+            }
+
+        });
+    }
+
+    // toggle enable qty
+    if(enableQty){
+        enableQty.addEventListener('change', function() {
+            if(qtyInput){
+                qtyInput.disabled = !this.checked;
+
+                if(!this.checked){
+                    qtyInput.value = 1;
+                }
+            }
+        });
+    }
 
 }

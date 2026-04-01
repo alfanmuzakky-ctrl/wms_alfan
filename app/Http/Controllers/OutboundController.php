@@ -174,126 +174,141 @@ return response()->json([
 }
 
     public function picking($id)
-    {
-
+{
     $outbound = Outbound::with('details.orders')->findOrFail($id);
 
-    foreach ($outbound->details as $detail)
-    {
-
-    foreach ($detail->orders as $order)
-    {
-
-    $pickQty = $order->qty_allocated;
-
-    if($pickQty <= 0) continue;
-
     /*
-    1️⃣ UPDATE ORDER DETAIL
+    🔒 CEK: jika outbound sudah selesai
     */
+    if ($outbound->status === 'PICKED') {
+        return response()->json([
+            'success' => false,
+            'message' => 'Outbound sudah selesai picking'
+        ], 400);
+    }
 
-    $order->qty_picked = $pickQty;
-    $order->status = 'PICKED';
-    $order->save();
+    foreach ($outbound->details as $detail) {
 
-    /*
-    2️⃣ UPDATE INVENTORY BIN
-    */
+        foreach ($detail->orders as $order) {
 
-    $binStock = Inventory::where('sku_id',$detail->sku)
-    ->where('location_id',$order->location)
-    ->where('batch_number',$order->batch_number)
-    ->first();
+            /*
+            🔒 CEK: skip jika sudah fully picked
+            */
+            if ($order->qty_picked >= $order->qty_allocated) {
+                continue;
+            }
 
-    if($binStock)
-    {
+            /*
+            Hitung sisa yang bisa dipick
+            */
+            $remainingQty = $order->qty_allocated - $order->qty_picked;
 
-    $binStock->qty_allocated -= $pickQty;
-    $binStock->qty_stock -= $pickQty;
+            if ($remainingQty <= 0) {
+                continue;
+            }
 
-    $binStock->save();
+            $pickQty = $remainingQty;
 
+            /*
+            1️⃣ UPDATE ORDER
+            */
+            $order->qty_picked += $pickQty;
+
+            if ($order->qty_picked >= $order->qty_allocated) {
+                $order->status = 'PICKED';
+            } else {
+                $order->status = 'PARTIAL';
+            }
+
+            $order->save();
+
+            /*
+            2️⃣ UPDATE INVENTORY BIN (SOURCE)
+            */
+            $binStock = Inventory::where('sku_id', $detail->sku)
+                ->where('location_id', $order->location)
+                ->where('batch_number', $order->batch_number)
+                ->first();
+
+            if ($binStock) {
+
+                $binStock->qty_allocated -= $pickQty;
+                $binStock->qty_stock -= $pickQty;
+
+                // prevent minus
+                if ($binStock->qty_allocated < 0) {
+                    $binStock->qty_allocated = 0;
+                }
+
+                if ($binStock->qty_stock < 0) {
+                    $binStock->qty_stock = 0;
+                }
+
+                $binStock->save();
+            }
+
+            /*
+            3️⃣ PINDAHKAN KE OUT-STATION
+            */
+            $outStation = Inventory::where('sku_id', $detail->sku)
+                ->where('location_id', 'OUT-STATION')
+                ->where('batch_number', $order->batch_number)
+                ->first();
+
+            if ($outStation) {
+
+                $outStation->qty_stock += $pickQty;
+
+                // semua barang di station dianggap allocated
+                $outStation->qty_allocated = $outStation->qty_stock;
+
+                $outStation->save();
+
+            } else {
+
+                Inventory::create([
+                    'sku_id'        => $detail->sku,
+                    'location_id'   => 'OUT-STATION',
+                    'batch_number'  => $order->batch_number,
+                    'expired_date'  => $order->expired_date,
+                    'qty_stock'     => $pickQty,
+                    'qty_allocated' => $pickQty
+                ]);
+            }
+
+            /*
+            4️⃣ UPDATE DETAIL
+            */
+            $detail->qty_picked += $pickQty;
+        }
+
+        /*
+        🔄 UPDATE STATUS DETAIL
+        */
+        if ($detail->qty_picked >= $detail->qty_allocated) {
+            $detail->status = 'PICKED';
+        } else {
+            $detail->status = 'PARTIAL';
+        }
+
+        $detail->save();
     }
 
     /*
-    3️⃣ PINDAHKAN KE OUT-STATION
+    🔄 UPDATE STATUS OUTBOUND
     */
+    $allPicked = $outbound->details->every(function ($detail) {
+        return $detail->status === 'PICKED';
+    });
 
-    $outStation = Inventory::where('sku_id',$detail->sku)
-    ->where('location_id','OUT-STATION')
-    ->where('batch_number',$order->batch_number)
-    ->first();
-
-    if($outStation)
-    {
-
-    /*
-    Tambahkan stock
-    */
-
-    $outStation->qty_stock += $pickQty;
-
-    /*
-    Karena barang di station sudah reserved
-    allocated = qty_stock
-    */
-
-    $outStation->qty_allocated = $outStation->qty_stock;
-
-    $outStation->save();
-
-    }
-    else
-    {
-
-    Inventory::create([
-    'sku_id'=>$detail->sku,
-    'location_id'=>'OUT-STATION',
-    'batch_number'=>$order->batch_number,
-    'expired_date'=>$order->expired_date,
-
-    'qty_stock'=>$pickQty,
-
-    /*
-    langsung allocated semua
-    */
-
-    'qty_allocated'=>$pickQty
-    ]);
-
-    }
-
-    /*
-    4️⃣ UPDATE OUTBOUND DETAIL
-    */
-
-    $detail->qty_picked += $pickQty;
-
-    }
-
-    /*
-    UPDATE STATUS DETAIL
-    */
-
-    $detail->status = 'PICKED';
-    $detail->save();
-
-    }
-
-    /*
-    UPDATE STATUS OUTBOUND
-    */
-
-    $outbound->status = 'PICKED';
+    $outbound->status = $allPicked ? 'PICKED' : 'PARTIAL';
     $outbound->save();
 
     return response()->json([
         'success' => true,
-        'message' => 'Picking selesai'
+        'message' => 'Picking berhasil diproses'
     ]);
-
-    }
-
+}
 
     public function packing($id)
     {
@@ -319,25 +334,83 @@ return response()->json([
 
     }
     public function ship($id)
-    {
-
+{
     $outbound = Outbound::with('details')->findOrFail($id);
 
-    foreach ($outbound->details as $detail)
-    {
-
-    $detail->status = 'SHIPPED';
-    $detail->save();
-
+    /*
+    🔒 CEK: hanya bisa ship jika sudah PACKED
+    */
+    if ($outbound->status !== 'PACKED') {
+        return response()->json([
+            'success' => false,
+            'message' => 'Outbound belum selesai packing'
+        ], 400);
     }
 
+    foreach ($outbound->details as $detail) {
+
+        /*
+        🔒 VALIDASI: pastikan qty packed ada
+        */
+        if ($detail->qty_packed <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => "SKU {$detail->sku} belum dipacking"
+            ], 400);
+        }
+
+        $shipQty = $detail->qty_packed;
+
+        /*
+        1️⃣ KURANGI STOCK DI OUT-STATION
+        */
+        $outStation = Inventory::where('sku_id', $detail->sku)
+            ->where('location_id', 'OUT-STATION')
+            ->first();
+
+        if (!$outStation) {
+            return response()->json([
+                'success' => false,
+                'message' => "Stock OUT-STATION tidak ditemukan untuk SKU {$detail->sku}"
+            ], 400);
+        }
+
+        /*
+        🔒 VALIDASI: tidak boleh minus
+        */
+        if ($outStation->qty_stock < $shipQty) {
+            return response()->json([
+                'success' => false,
+                'message' => "Stock tidak cukup untuk SKU {$detail->sku}"
+            ], 400);
+        }
+
+        $outStation->qty_stock -= $shipQty;
+        $outStation->qty_allocated -= $shipQty;
+
+        // prevent minus
+        if ($outStation->qty_allocated < 0) {
+            $outStation->qty_allocated = 0;
+        }
+
+        $outStation->save();
+
+        /*
+        2️⃣ UPDATE STATUS DETAIL
+        */
+        $detail->status = 'SHIPPED';
+        $detail->save();
+    }
+
+    /*
+    3️⃣ UPDATE STATUS OUTBOUND
+    */
     $outbound->status = 'SHIPPED';
     $outbound->save();
 
     return response()->json([
         'success' => true,
-        'message' => 'Outbound shipped'
+        'message' => 'Outbound berhasil di shipping'
     ]);
-
-    }
+}
 }
