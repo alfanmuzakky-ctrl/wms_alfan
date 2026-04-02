@@ -1,27 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login</title>
+    <meta charset="UTF-8">
+    <title>Login - WMS</title>
+
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
 <body>
 
-<h2>Login</h2>
+<div class="login-container">
+    <div class="login-card">
 
-@if(session('error'))
-    <p style="color:red">{{ session('error') }}</p>
-@endif
+        <h2>WMS Login</h2>
 
-<form method="POST" action="/login">
-    @csrf
+        @if(session('error'))
+            <div class="error-msg">
+                {{ session('error') }}
+            </div>
+        @endif
 
-    <label>Account</label><br>
-    <input type="text" name="account"><br><br>
+        <form method="POST" action="/login">
+            @csrf
 
-    <label>Password</label><br>
-    <input type="password" name="password"><br><br>
+            <div class="form-group">
+                <label>Account</label>
+                <input type="text" name="account" placeholder="Masukkan account" required autofocus>
+            </div>
 
-    <button type="submit">Login</button>
-</form>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Masukkan password" required>
+            </div>
+
+            <button type="submit" class="login-btn">Login</button>
+
+        </form>
+
+    </div>
+</div>
 
 </body>
 </html>

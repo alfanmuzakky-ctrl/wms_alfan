@@ -55,14 +55,17 @@ Route::middleware(['auth'])->group(function () {
     /* INBOUND */
     Route::prefix('inbounds')->group(function () {
 
-        Route::get('/', [InboundController::class, 'index']);
-        Route::get('/create', [InboundController::class, 'create']);
-        Route::post('/store', [InboundController::class, 'store']);
-        Route::get('/{id}', [InboundController::class, 'show']);
-
-        Route::post('/{id}/add-sku', [InboundController::class, 'addSku']);
-        Route::post('/{id}/receive', [InboundController::class, 'received']);
-        Route::post('/{id}/close', [InboundController::class, 'close']);
+        Route::resource('inbounds', InboundController::class);
+Route::get('/', [InboundController::class, 'index']);
+Route::get('/create', [InboundController::class, 'create']);
+Route::post('/', [InboundController::class, 'store']);
+Route::get('/{id}', [InboundController::class, 'show']);
+Route::post('/{id}/add-sku', [InboundController::class, 'addSku']);
+Route::get('/putaway', [InboundController::class, 'putawayIndex']);
+Route::post('/putaway/process', [InboundController::class, 'putawayProcess']);
+Route::post('/{id}/receive', [InboundController::class, 'received']);
+Route::post('/{id}/close', [InboundController::class, 'close']);
+Route::post('/receive', [InboundController::class, 'received']);
     });
 
     Route::get('/putaway', [InboundController::class, 'putawayIndex']);

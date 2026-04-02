@@ -3,7 +3,7 @@
         Inbound Detail
     </div>
 
-    <form id="addForm">
+    <form method="POST" action="/inbounds" id="addForm">
         @csrf
 
         <div class="form-grid">

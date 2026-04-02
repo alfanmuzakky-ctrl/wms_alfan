@@ -7,13 +7,11 @@ function bindForm(formId, url, method = 'POST') {
     if (!form) return;
 
     form.onsubmit = null;
-
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         e.stopPropagation();
 
         const formData = new FormData(form);
-
         fetch(url, {
             method: method,
             headers: {
@@ -25,8 +23,8 @@ function bindForm(formId, url, method = 'POST') {
         .then(data => {
             if (data.success) {
                 alert(data.message ?? 'Data berhasil disimpan');
-                closeDrawer(); // dari drawer.js
-                loadPage('/' + data.module); // dari tabs.js
+                closeDrawer();
+                loadPage('/' + data.module);
             }
         })
         .catch(err => console.error(err));
@@ -59,14 +57,12 @@ function openEdit() {
     if (!form) return;
 
     form.onsubmit = null;
-
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         e.stopPropagation();
 
         const resource = form.dataset.resource;
         const id = form.dataset.id;
-
         const formData = new FormData(form);
 
         fetch('/' + resource + '/' + encodeURIComponent(id), {
@@ -80,8 +76,8 @@ function openEdit() {
         .then(data => {
             if (data.success) {
                 alert(data.message);
-                closeDrawer(); // drawer.js
-                loadPage('/' + resource); // tabs.js
+                closeDrawer();
+                loadPage('/' + resource);
             }
         })
         .catch(err => console.error(err));
