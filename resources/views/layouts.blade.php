@@ -12,13 +12,27 @@
 <body onload="openTab('/dashboard', 'Dashboard')">
 
     <div class="topbar">
-        <div class="topbar-left">
-            <div class="menu-btn" onclick="openSidebar()">☰</div>
-        </div>
-        
-        <div class="tabs" id="tabsContainer">
-            </div>
+
+    <div class="topbar-left">
+        <div class="menu-btn" onclick="openSidebar()">☰</div>
     </div>
+    
+    <div class="tabs" id="tabsContainer"></div>
+
+    <div class="topbar-right">
+        @auth
+            <span class="user-info">
+                {{ auth()->user()->account }} ({{ auth()->user()->role }})
+            </span>
+
+            <form method="POST" action="/logout">
+                @csrf
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        @endauth
+    </div>
+
+</div>
 
     <div id="sidebar" class="sidebar">
         <div class="sidebar-header">
@@ -28,7 +42,7 @@
 
         <nav class="sidebar-nav">
             <a onclick="openTab('/dashboard', 'Dashboard')">Dashboard</a>
-
+@if(auth()->user()->role == 'Admin')
             <div class="nav-group">
                 <a onclick="toggleMenu('basic')" class="nav-dropdown">Basic Setup <span class="arrow">▾</span></a>
                 <div id="basic" class="submenu">
@@ -38,11 +52,13 @@
                     <a onclick="openTab('/locations', 'Location')">Master Location</a>
                 </div>
             </div>
-
+@endif
             <div class="nav-group">
                 <a onclick="toggleMenu('inbound')" class="nav-dropdown">Inbound <span class="arrow">▾</span></a>
                 <div id="inbound" class="submenu">
+                    @if(auth()->user()->role == 'Admin')
                     <a onclick="openTab('/inbounds', 'Inbound')">Incoming Order</a>
+                    @endif
                     <a onclick="openTab('/putaway', 'Putaway')">Putaway Process</a>
                 </div>
             </div>
@@ -52,7 +68,9 @@
             <div class="nav-group">
                 <a onclick="toggleMenu('outbound')" class="nav-dropdown">Outbound <span class="arrow">▾</span></a>
                 <div id="outbound" class="submenu">
+                    @if(auth()->user()->role == 'Admin')
                     <a onclick="openTab('/outbounds', 'Outbound')">Outbound Order</a>
+                    @endif
                     <a onclick="openTab('/packing-check', 'Packing')">Packing & Check</a>
                 </div>
             </div>

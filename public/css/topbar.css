@@ -1,6 +1,4 @@
-/* 
-   TOPBAR (NAVBAR MODERN)
- */
+/* TOPBAR (NAVBAR MODERN) */
 .topbar {
     height: 60px;
     background: linear-gradient(90deg, #072D44, #064469);
@@ -9,10 +7,66 @@
     align-items: center;
     padding: 0 20px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    gap: 15px; /* 🔥 biar spacing rapi tanpa margin manual */
 }
 
+/* LEFT */
+.topbar-left {
+    display: flex;
+    align-items: center;
+}
+
+/* MENU BUTTON */
 .menu-btn {
     font-size: 22px;
-    cursor: default;
-    margin-right: 15px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+/* TABS */
+.tabs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+/* HILANGIN SCROLLBAR JELEK */
+.tabs::-webkit-scrollbar {
+    display: none;
+}
+
+/* RIGHT SIDE */
+.topbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* USER INFO */
+.user-info {
+    font-size: 13px;
+    opacity: 0.85;
+    background: rgba(255,255,255,0.08);
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+/* LOGOUT BUTTON */
+.logout-btn {
+    background: #ff4d4f;
+    border: none;
+    padding: 6px 14px;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: #d9363e;
+    transform: scale(1.05);
 }
