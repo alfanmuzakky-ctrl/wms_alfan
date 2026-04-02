@@ -72,60 +72,108 @@
 
 <div class="section-box">
 
-    <div class="section-title">Item List</div>
+    <!-- TITLE -->
+    <div id="tab-title" class="section-title">Item List</div>
 
-    <div class="table-container">
-        <table class="custom-table">
+    <!-- TAB BUTTON -->
+    <div class="tab-header">
+    <span class="tab-item active" onclick="switchTab(event, 'order')">
+        Order Detail
+    </span>
 
-            <thead>
+    <span class="tab-item" onclick="switchTab(event, 'outbound')">
+        Allocation Details
+    </span>
+</div>
+
+    <!-- =========================
+        TAB ORDER
+    ========================== -->
+    <div id="tab-order" class="tab-content" style="display:block;">
+
+        <div class="table-container">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Order</th>
+                        <th>Allocated</th>
+                        <th>Picked</th>
+                        <th>Packed</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                @foreach($details as $d)
                 <tr>
-                    <th>SKU</th>
-                    <th>Order</th>
-                    <th>Allocated</th>
-                    <th>Picked</th>
-                    <th>Packed</th>
-                    <th>Status</th>
+                    <td>
+                        <strong>{{$d->sku}}</strong><br>
+                        <small>{{$d->skuData->name ?? '-'}}</small>
+                    </td>
+                    <td>{{$d->order_qty}}</td>
+                    <td>{{$d->qty_allocated}}</td>
+                    <td>{{$d->qty_picked}}</td>
+                    <td>{{$d->qty_packed}}</td>
+                    <td>
+                        <span class="status-badge status-{{ strtolower($d->status) }}">
+                            {{$d->status}}
+                        </span>
+                    </td>
                 </tr>
-            </thead>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
 
-            <tbody>
+    </div>
 
-            @foreach($details as $d)
+    <!-- =========================
+        TAB OUTBOUND
+    ========================== -->
+    <div id="tab-outbound" class="tab-content" style="display:none;">
 
-            <tr>
+        <div class="table-container">
+            <table class="custom-table">
 
-                <td>
-                    <strong>{{$d->sku}}</strong>
-                    <br>
-                    <small>{{$d->skuData->name ?? '-'}}</small>
-                </td>
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Location</th>
+                        <th>Batch</th>
+                        <th>Expired</th>
+                        <th>Allocated</th>
+                        <th>Picked</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
 
-                <td>{{$d->order_qty}}</td>
+                <tbody>
+                @foreach($details as $d)
+                    @foreach($d->orders as $a)
+                    <tr>
+                        <td>{{$d->sku}}</td>
+                        <td>{{$a->location}}</td>
+                        <td>{{$a->batch_number ?? '-'}}</td>
+                        <td>{{$a->expired_date ?? '-'}}</td>
+                        <td>{{$a->qty_allocated}}</td>
+                        <td>{{$a->qty_picked}}</td>
+                        <td>
+                            <span class="status-badge status-{{ strtolower($a->status) }}">
+                                {{$a->status}}
+                            </span>
+                        </td>
+                    </tr>
+                    @endforeach
+                @endforeach
+                </tbody>
 
-                <td>{{$d->qty_allocated}}</td>
+            </table>
+        </div>
 
-                <td>{{$d->qty_picked}}</td>
-
-                <td>{{$d->qty_packed}}</td>
-
-                <td>
-                    <span class="status-badge status-{{ strtolower($d->status) }}">
-                        {{$d->status}}
-                    </span>
-                </td>
-
-            </tr>
-
-            @endforeach
-
-            </tbody>
-
-        </table>
     </div>
 
 </div>
-
-
 
 <div class="toolbar" style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
 
@@ -169,4 +217,5 @@ Print Picking
 </div>
 
 
+<script src="{{ asset('js/outbound.js') }}"></script>
 

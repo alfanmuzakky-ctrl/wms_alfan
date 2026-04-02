@@ -1,0 +1,12 @@
+/* ===============================
+   TABLE CONTAINER
+=============================== */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.custom-table {
+    width: 100%;
+    font-size: 13px;
+}

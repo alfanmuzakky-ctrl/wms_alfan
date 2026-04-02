@@ -1,0 +1,35 @@
+/* ===============================
+   PRINT (UNCHANGED CORE)
+=============================== */
+@page {
+    size: 100mm 30mm;
+    margin: 0;
+}
+
+.print-body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial;
+}
+
+.label {
+    width: 90mm;
+    height: 25mm;
+    border: 1px solid black;
+    display: flex;
+}
+
+.label-qr {
+    width: 28mm;
+    display: flex;
+    justify-content: center;
+    border-right: 1px solid black;
+}
+
+.label-info {
+    flex: 1;
+    padding: 2mm;
+}

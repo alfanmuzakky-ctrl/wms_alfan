@@ -1,0 +1,13 @@
+/* ===============================
+   BUTTON
+=============================== */
+.btn-grey {
+    background: #064469;
+    color: white;
+    border-radius: 1px;
+}
+
+.btn-grey:hover {
+    background: #072D44;
+}
+

@@ -1,0 +1,9 @@
+/* ===============================
+   ALERT
+=============================== */
+.alert-success {
+    background: #e6ffed;
+    color: #0a7a2f;
+    padding: 12px;
+    border-radius: 10px;
+}

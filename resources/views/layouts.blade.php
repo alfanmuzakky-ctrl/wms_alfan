@@ -6,7 +6,8 @@
     <title>NIAGA WMS - Dashboard</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
-    <link rel="stylesheet" href="{{ asset('css/wms.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    
 </head>
 <body onload="openTab('/dashboard', 'Dashboard')">
 
@@ -53,7 +54,6 @@
                 <div id="outbound" class="submenu">
                     <a onclick="openTab('/outbounds', 'Outbound')">Outbound Order</a>
                     <a onclick="openTab('/packing-check', 'Packing')">Packing & Check</a>
-                    <a onclick="openTab('/shipping', 'Shipping')">Shipping</a>
                 </div>
             </div>
         </nav>
@@ -75,6 +75,15 @@
         </div>
     </main>
 
-    <script src="{{ asset('js/wms.js') }}" defer></script>
+    
+    <script src="{{ asset('js/sidebar.js') }}" defer></script>
+    <script src="{{ asset('js/tabs.js') }}" defer></script>
+    <script src="{{ asset('js/drawer.js') }}" defer></script>
+    <script src="{{ asset('js/forms.js') }}" defer></script>
+    <script src="{{ asset('js/inbound.js') }}" defer></script>
+    <script src="{{ asset('js/putaway.js') }}" defer></script>
+    <script src="{{ asset('js/outbound.js') }}" defer></script>
+    <script src="{{ asset('js/packing.js') }}" defer></script>
+    <script src="{{ asset('js/global.js') }}" defer></script>
 </body>
 </html>

@@ -1,0 +1,52 @@
+/* ===============================
+   DRAWER (MODERN PANEL)
+=============================== */
+.drawer {
+    position: fixed;
+    top: 0;
+    right: -900px;
+    width: 900px;
+    height: 100%;
+    background: #ffffff;
+    box-shadow: -8px 0 30px rgba(0,0,0,0.15);
+    transition: 0.3s;
+    overflow-y: auto;
+    border-radius: 20px 0 0 20px;
+}
+
+.drawer.active {
+    right: 0;
+}
+
+.drawer-arrow {
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 60px;
+    background: #072D44;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px 0 0 8px;
+}
+
+.drawer-arrow:hover {
+    background: #9CCDDB;
+    color: #072D44;
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.drawer-close:hover {
+    background: #D0D7E1;
+    border-radius: 6px;
+}

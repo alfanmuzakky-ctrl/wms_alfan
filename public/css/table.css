@@ -1,0 +1,41 @@
+/* ===============================
+   TABLE (MODERN CLEAN)
+=============================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 13px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+}
+.table-container {
+    overflow-x: auto;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+thead {
+    background: #072D44;
+    color: white;
+}
+
+tbody tr:nth-child(even) {
+    background: #f4f8fb;
+}
+
+tbody tr:hover {
+    background: #9CCDDB;
+    color: #072D44;
+}
+
+/* truncate */
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}

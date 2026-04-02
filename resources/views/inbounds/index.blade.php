@@ -20,7 +20,10 @@
 
                     <td class="font-bold">{{ $inbound->id }}</td>
 
-                    <td>{{ $inbound->supplier_id }}</td>
+                    <td>
+                        {{ $inbound->supplier_id ?? '-' }}<br>
+                        <small> {{ $inbound->supplier->name ?? '-' }}</small>
+                    </td>
 
                     <td>
                         <span class="status-badge status-{{ strtolower($inbound->status) }}">

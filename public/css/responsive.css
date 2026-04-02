@@ -1,0 +1,22 @@
+/* ===============================
+   RESPONSIVE
+=============================== */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .drawer {
+        width: 100%;
+    }
+
+    .tabs {
+        overflow-x: auto;
+    }
+
+    .topbar {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px;
+    }
+}

@@ -1,0 +1,63 @@
+/* Section Box */
+.section-box {
+    position: relative;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 25px 20px 30px 20px;
+    margin: 20px;
+}
+
+.section-title {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 0 8px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.section-button {
+    position: absolute;
+    bottom: -12px;
+    left: 15px;
+    background: white;
+    border: 1px solid #064469;
+    color: #064469;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: default;
+}
+
+.section-button:hover {
+    background: #064469;
+    color: white;
+}
+
+.section-box h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+/* Form Layout */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 12px;
+    margin-bottom: 4px;
+    color: #555;
+}

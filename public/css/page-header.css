@@ -1,0 +1,9 @@
+/* ===============================
+   PAGE HEADER
+=============================== */
+.page-header {
+    padding: 15px;
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}

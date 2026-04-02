@@ -1,0 +1,52 @@
+/* ===============================
+   SIDEBAR (GLASS + MODERN)
+=============================== */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    width: 260px;
+    height: 100%;
+    background: linear-gradient(180deg, #072D44, #064469);
+    color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: 0.3s ease;
+    z-index: 1000;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+    user-select: none;
+    overflow-y: auto;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.sidebar h2 {
+    margin-top: 0;
+}
+
+.sidebar a {
+    display: block;
+    padding: 10px 12px;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    transition: all 0.2s ease;
+}
+
+.sidebar a:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+/* SUBMENU */
+.submenu {
+    display: none;
+    padding-left: 10px;
+}
+
+.submenu a {
+    font-size: 13px;
+    background: rgba(255,255,255,0.1);
+}

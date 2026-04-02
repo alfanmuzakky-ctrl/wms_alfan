@@ -1,7 +1,6 @@
 <div class="content">
     <div class="dashboard">
-
-        <h2>Dashboard WMS</h2>
+        <h2>Dashboard</h2>
 
         <!-- MASTER -->
         <div class="grid-4">

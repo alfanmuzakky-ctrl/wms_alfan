@@ -1,0 +1,28 @@
+/* CORE */
+@import url('./base.css');
+
+/* LAYOUT */
+@import url('./topbar.css');
+@import url('./tabs.css');
+@import url('./sidebar.css');
+@import url('./content.css');
+
+/* COMPONENT */
+@import url('./table.css');
+@import url('./table-extra.css');
+@import url('./drawer.css');
+@import url('./buttons.css');
+@import url('./alert.css');
+@import url('./form-section.css');
+@import url('./toolbar.css');
+@import url('./page-header.css');
+@import url('./details-tabs.css');
+
+/* PAGE */
+@import url('./print.css');
+
+/* RESPONSIVE */
+@import url('./responsive.css');
+
+/* LAST (override paling akhir) */
+@import url('./dashboard.css');

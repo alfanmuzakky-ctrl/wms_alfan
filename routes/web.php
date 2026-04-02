@@ -126,3 +126,7 @@ Route::post('/packing-check/load-order',[PackingCheckController::class,'loadOrde
 Route::post('/packing-check/scan-sku',[PackingCheckController::class,'scanSku']);
 
 Route::post('/packing-check/confirm-pack',[PackingCheckController::class,'confirmPack']);
+
+Route::get('/wms', function () {
+    return view('mobile.layouts');
+});
