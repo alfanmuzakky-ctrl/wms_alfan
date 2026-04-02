@@ -1,13 +1,13 @@
-/* ===============================
+/* 
    GLOBAL CSRF
-=============================== */
+ */
 
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
 
-/* ===============================
+/* 
    ALLOCATE STOCK
-=============================== */
+ */
 
 function allocateOutbound(id){
 
@@ -34,9 +34,9 @@ function allocateOutbound(id){
 }
 
 
-/* ===============================
+/* 
    PICKING
-=============================== */
+ */
 
 function pickingOutbound(id){
 
@@ -63,9 +63,9 @@ function pickingOutbound(id){
 }
 
 
-/* ===============================
+/* 
    PACKING
-=============================== */
+ */
 
 function packingOutbound(id){
 
@@ -92,9 +92,9 @@ function packingOutbound(id){
 }
 
 
-/* ===============================
+/* 
    SHIP
-=============================== */
+ */
 
 function shipOutbound(id){
 
@@ -123,9 +123,9 @@ function shipOutbound(id){
 }
 
 
-/* ===============================
+/* 
    EXPORT GLOBAL
-=============================== */
+ */
 
 window.allocateOutbound = allocateOutbound;
 window.pickingOutbound = pickingOutbound;

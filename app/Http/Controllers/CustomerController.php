@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-/* Imports */
+
 use App\Models\Customer;
 use Illuminate\Http\Request;
 

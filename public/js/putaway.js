@@ -1,6 +1,6 @@
-/* ===============================
+/* 
    PUTAWAY SECTION
-=============================== */
+ */
 
 // Submit dari button (generic)
 function submitButton(button) {
@@ -24,9 +24,9 @@ function submitButton(button) {
 }
 
 
-/* ===============================
+/* 
    PROCESS PUTAWAY
-=============================== */
+ */
 
 function submitPutaway(inventoryId) {
 
@@ -85,9 +85,9 @@ function submitPutaway(inventoryId) {
 }
 
 
-/* ===============================
+/* 
    EXPORT GLOBAL
-=============================== */
+ */
 
 window.submitButton = submitButton;
 window.submitPutaway = submitPutaway;

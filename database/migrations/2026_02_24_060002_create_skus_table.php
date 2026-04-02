@@ -21,7 +21,7 @@ return new class extends Migration
 
         });
 
-        // AUTO INSERT SAMPLE DATA
+       
         DB::table('skus')->insert([
 
             [

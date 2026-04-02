@@ -8,16 +8,16 @@
     <meta charset="utf-8">
     <title>Inbound Task List - {{ $inbound->id }}</title>
     <style>
-        /* Base Styling */
+      
         body {
-            font-family: 'Courier New', Courier, monospace; /* Font monospaced lebih standar untuk dokumen gudang */
+            font-family: 'Courier New', Courier, monospace; 
             font-size: 12px;
             margin: 0;
             padding: 20px;
             color: #333;
         }
 
-        /* Header Section */
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -33,7 +33,7 @@
             text-transform: uppercase;
         }
 
-        /* Barcode Area */
+  
         .barcode-section {
             display: flex;
             gap: 20px;
@@ -56,7 +56,7 @@
             font-size: 10px;
         }
 
-        /* Document Info */
+        
         .info-container {
             display: flex;
             justify-content: space-between;
@@ -64,8 +64,7 @@
             line-height: 1.6;
         }
 
-        /* Table Styling */
-        table {
+          table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
@@ -85,7 +84,7 @@
 
         .text-center { text-align: center; }
 
-        /* Print Specific */
+       
         @media print {
             button, .no-print {
                 display: none;
@@ -167,8 +166,7 @@
     </div>
 
     <script>
-        // Otomatis trigger print saat page load (opsional)
-        // window.onload = () => window.print();
+        
     </script>
 </body>
 </html>

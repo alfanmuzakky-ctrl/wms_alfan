@@ -23,7 +23,6 @@ return new class extends Migration
 
         });
 
-        // Auto insert sample data
         DB::table('customers')->insert([
             [
                 'id' => 'CUST001',

@@ -1,12 +1,12 @@
-/* ================================
+/* =
    GLOBAL
-================================ */
+= */
 let isConfirming = false;
 
 
-/* ================================
+/* =
    LOAD ORDER
-================================ */
+= */
 
 function loadOrder(){
 
@@ -69,9 +69,9 @@ function loadOrder(){
 }
 
 
-/* ================================
+/* =
    SCAN SKU
-================================ */
+= */
 
 function scanSku(){
 
@@ -157,9 +157,9 @@ function scanSku(){
 }
 
 
-/* ================================
+/* =
    AUTO CONFIRM
-================================ */
+= */
 
 function checkAutoConfirm(){
 
@@ -190,9 +190,9 @@ function checkAutoConfirm(){
 }
 
 
-/* ================================
+/* =
    CONFIRM PACK
-================================ */
+= */
 
 function confirmPack(){
 
@@ -234,9 +234,9 @@ function confirmPack(){
 }
 
 
-/* ================================
+/* =
    INIT EVENT (PENTING)
-================================ */
+= */
 
 function initPackingEvent(){
 
@@ -300,9 +300,9 @@ function initPackingEvent(){
 }
 
 
-/* ================================
+/* =
    EXPORT GLOBAL
-================================ */
+ */
 
 window.loadOrder = loadOrder;
 window.scanSku = scanSku;

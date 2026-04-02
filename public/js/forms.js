@@ -1,6 +1,6 @@
-/* ===============================
+/* 
    GENERIC FORM BINDER
-=============================== */
+ */
 
 function bindForm(formId, url, method = 'POST') {
     const form = document.getElementById(formId);
@@ -33,9 +33,9 @@ function bindForm(formId, url, method = 'POST') {
     });
 }
 
-/* ===============================
+/* 
    CREATE
-=============================== */
+ */
 
 function openCreate(module) {
     const drawer = document.getElementById('drawer');
@@ -50,9 +50,9 @@ function openCreate(module) {
         });
 }
 
-/* ===============================
+/* 
    EDIT
-=============================== */
+ */
 
 function openEdit() {
     const form = document.getElementById('editForm');
@@ -88,9 +88,9 @@ function openEdit() {
     });
 }
 
-/* ===============================
+/* 
    EXPORT GLOBAL
-=============================== */
+ */
 
 window.bindForm = bindForm;
 window.openCreate = openCreate;

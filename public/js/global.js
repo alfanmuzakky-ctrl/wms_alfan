@@ -1,13 +1,13 @@
-/* ================================
+/* =
    GLOBAL CSRF
-================================ */
+= */
 window.csrfToken = document
     .querySelector('meta[name="csrf-token"]')
     .getAttribute('content');
 
-/* ================================
+/* =
    GLOBAL EVENT LISTENERS
-================================ */
+= */
 
 // Auto close sidebar saat klik di luar
 document.addEventListener('click', function(event) {
@@ -34,9 +34,9 @@ document.addEventListener('click', function(event) {
 });
 
 
-/* ================================
+/* =
    GENERIC SUBMIT ACTION
-================================ */
+= */
 
 function submitAction(url, module, id, payload = {})
 {
@@ -66,8 +66,8 @@ function submitAction(url, module, id, payload = {})
 }
 
 
-/* ================================
+/* =
    EXPORT GLOBAL
-================================ */
+= */
 
 window.submitAction = submitAction;

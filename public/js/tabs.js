@@ -1,6 +1,6 @@
-/* ===============================
+/* 
    PAGE LOADER & TABS
-=============================== */
+ */
 
 function loadPage(url) {
     fetch(url)
@@ -102,9 +102,9 @@ window.switchTab = function(event, tab) {
 
 };
 
-/* ===============================
+/* 
    EXPORT GLOBAL (WAJIB)
-=============================== */
+ */
 
 window.loadPage = loadPage;
 window.openTab = openTab;

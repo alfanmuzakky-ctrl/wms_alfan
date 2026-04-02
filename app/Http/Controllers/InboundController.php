@@ -74,12 +74,12 @@ class InboundController extends Controller
         ]);
     }
 
-    // 🛠 FIX: Hapus $id dari parameter karena kita ambil dari $request->detail_id
+    
     public function received(Request $request)
     {
         DB::beginTransaction();
         try {
-            // Ambil detail ID dari body JSON
+        
             $detail = InboundDetail::findOrFail($request->detail_id);
             $inbound = $detail->inbound;
 
@@ -94,7 +94,7 @@ class InboundController extends Controller
                 return response()->json(['success' => false, 'message' => 'Qty tidak valid atau melebihi sisa']);
             }
 
-            // 🔹 Tambah stock ke INB-STATION (Staging)
+            
             $inventory = Inventory::firstOrCreate(
                 [
                     'sku_id' => $detail->sku_id,
@@ -108,12 +108,12 @@ class InboundController extends Controller
             $inventory->qty_stock += $receiveQty;
             $inventory->save();
 
-            // 🔹 Update detail
+            
             $detail->received_qty += $receiveQty;
             $detail->status = ($detail->received_qty >= $detail->qty) ? 'RECEIVED' : 'PARTIAL';
             $detail->save();
 
-            // 🔹 Update inbound status header
+            
             $this->updateInboundStatus($inbound);
 
             DB::commit();
@@ -167,11 +167,11 @@ class InboundController extends Controller
                 return response()->json(['success' => false, 'message' => 'Qty melebihi stok tersedia']);
             }
 
-            // Kurangi INB-STATION
+            
             $source->qty_stock -= $request->qty;
             $source->save();
 
-            // Tambah ke BIN tujuan
+            
             $dest = Inventory::firstOrCreate(
                 [
                     'sku_id' => $source->sku_id,

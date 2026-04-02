@@ -10,13 +10,13 @@ class DashboardController extends Controller
     {
         return view('dashboard.index', [
 
-            // MASTER
+            // Master
             'totalSku' => DB::table('skus')->count(),
             'totalSupplier' => DB::table('suppliers')->count(),
             'totalCustomer' => DB::table('customers')->count(),
             'totalLocation' => DB::table('locations')->count(),
 
-            // INVENTORY
+            // Inventory
             'totalStock' => DB::table('inventories')->sum('qty_stock') ?? 0,
             'allocatedStock' => DB::table('inventories')->sum('qty_allocated') ?? 0,
 
@@ -28,17 +28,17 @@ class DashboardController extends Controller
                 ->where('location_id', 'OUT-STATION')
                 ->sum('qty_stock') ?? 0,
 
-            // INBOUND
+            // Inbound
             'totalInbound' => DB::table('inbounds')->count(),
             'inboundCreate' => DB::table('inbounds')->where('status', 'CREATE')->count(),
             'inboundReceived' => DB::table('inbounds')->where('status', 'RECEIVED')->count(),
 
-            // OUTBOUND
+            // Outbound
             'totalOutbound' => DB::table('outbounds')->count(),
             'outboundPacked' => DB::table('outbounds')->where('status', 'PACKED')->count(),
             'outboundShipped' => DB::table('outbounds')->where('status', 'SHIPPED')->count(),
 
-            // TABLE
+            // Table
             'latestInbound' => DB::table('inbounds')
                 ->orderBy('created_at', 'desc')
                 ->limit(3)

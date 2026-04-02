@@ -1,6 +1,6 @@
-/* ===============================
+/* 
    INBOUND MANAGEMENT
-=============================== */
+ */
 
 // Handle form add SKU (GLOBAL LISTENER)
 document.addEventListener('submit', function(e) {
@@ -50,9 +50,9 @@ document.addEventListener('submit', function(e) {
 });
 
 
-/* ===============================
+/* 
    RECEIVE BARANG
-=============================== */
+ */
 
 function submitReceive(detailId, inboundId) {
 
@@ -91,9 +91,9 @@ function submitReceive(detailId, inboundId) {
 }
 
 
-/* ===============================
+/* 
    CLOSE INBOUND
-=============================== */
+ */
 
 function closeInbound(id) {
 
@@ -116,9 +116,9 @@ function closeInbound(id) {
 }
 
 
-/* ===============================
+/* 
    EXPORT GLOBAL
-=============================== */
+ */
 
 window.submitReceive = submitReceive;
 window.closeInbound = closeInbound;

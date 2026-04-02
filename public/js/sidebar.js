@@ -1,6 +1,6 @@
-/* ===============================
+/* 
    SIDEBAR SECTION
-=============================== */
+ */
 
 function openSidebar() {
     const sidebar = document.getElementById('sidebar');
@@ -18,9 +18,9 @@ function toggleMenu(id) {
     menu.style.display = (menu.style.display === "block") ? "none" : "block";
 }
 
-/* ===============================
+/* 
    EXPORT TO GLOBAL (WAJIB)
-=============================== */
+ */
 window.openSidebar = openSidebar;
 window.closeSidebar = closeSidebar;
 window.toggleMenu = toggleMenu;

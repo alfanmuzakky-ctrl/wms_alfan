@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-/* Imports */
+
 use App\Models\Inbound;
 use App\Models\InboundDetail;
 use App\Models\Outbound;

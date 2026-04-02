@@ -7,20 +7,18 @@ use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+ 
     public function up()
     {
         Schema::create('locations', function (Blueprint $table) {
-            $table->string('id')->primary(); // location_id
+            $table->string('id')->primary();
             $table->string('zone_group')->nullable();
             $table->string('location_category')->nullable();
             $table->enum('location_attribute', ['Active','Quarantine','Non-Active','Staging'])->default('Active');
             $table->timestamps();
         });
 
-        // Default Locations
+       
         DB::table('locations')->insert([
             [
                 'id' => 'INB-STATION',

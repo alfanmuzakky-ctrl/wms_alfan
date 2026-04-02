@@ -4,7 +4,7 @@
 
     <div class="section-title">Scan Outbound</div>
 
-    <!-- 🔥 pakai form biar Enter otomatis trigger -->
+
     <form onsubmit="loadOrder(); return false;">
         <input type="text" id="outboundInput" autofocus>
         <button type="submit">Load</button>
@@ -35,7 +35,7 @@
 
     <div class="section-title">Scan SKU</div>
 
-    <!-- 🔥 pakai form juga -->
+
     <form onsubmit="scanSku(); return false;">
         
         <input type="text" id="skuInput" placeholder="Scan SKU">

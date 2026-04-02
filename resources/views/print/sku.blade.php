@@ -22,7 +22,7 @@ body {
     box-sizing: border-box;
 }
 
-/* CONTAINER */
+
 .label-container{
     display:flex;
     align-items:center;
@@ -33,7 +33,7 @@ body {
     padding:4px;
 }
 
-/* QR */
+
 .label-qr{
     width:28mm;
     display:flex;
@@ -41,7 +41,7 @@ body {
     align-items:center;
 }
 
-/* TEXT AREA */
+
 .label-info{
     flex:1;
     padding-left:6px;
@@ -50,7 +50,7 @@ body {
     justify-content:center;
 }
 
-/* INBOUND */
+
 .text-id{
     font-size:13px;
     font-weight:bold;
@@ -60,7 +60,7 @@ body {
     margin-bottom:2px;
 }
 
-/* BATCH */
+
 .text-batch{
     font-size:10px;
     font-weight:bold;
@@ -68,7 +68,7 @@ body {
     margin-bottom:3px;
 }
 
-/* SKU */
+
 .text-sku{
     font-size:13px;
     font-weight:bold;
@@ -77,7 +77,7 @@ body {
     margin-bottom:2px;
 }
 
-/* NAME */
+
 .text-name{
     font-size:10px;
     line-height:1.2;

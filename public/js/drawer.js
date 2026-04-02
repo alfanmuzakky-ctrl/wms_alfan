@@ -1,6 +1,6 @@
-/* ===============================
+/* 
    DRAWER SECTION
-=============================== */
+ */
 
 function closeDrawer() {
     const drawer = document.getElementById('drawer');
@@ -31,9 +31,9 @@ function openDetail(module, id) {
         .catch(err => console.error(err));
 }
 
-/* ===============================
+/* 
    EXPORT GLOBAL
-=============================== */
+ */
 
 window.closeDrawer = closeDrawer;
 window.openDetail = openDetail;
