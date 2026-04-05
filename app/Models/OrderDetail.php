@@ -9,6 +9,7 @@ class OrderDetail extends Model
 
 protected $fillable = [
 'outbound_detail_id',
+'inventory_id',
 'location',
 'batch_number',
 'expired_date',
@@ -20,6 +21,10 @@ protected $fillable = [
 public function outboundDetail()
 {
 return $this->belongsTo(OutboundDetail::class);
+}
+public function inventory()
+{
+    return $this->belongsTo(Inventory::class);
 }
 
 }

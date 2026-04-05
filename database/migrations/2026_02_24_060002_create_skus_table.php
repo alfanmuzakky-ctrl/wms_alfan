@@ -25,33 +25,45 @@ return new class extends Migration
         DB::table('skus')->insert([
 
             [
-                'id' => '',
-                'alternative_code' => 'ALT001',
-                'name' => 'Instant Noodle',
-                'description' => 'Dry food product',
-                'category' => 'Dry',
-                'uom' => 'Pack',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-
-            [
-                'id' => 'SKU002',
-                'alternative_code' => 'ALT002',
-                'name' => 'Milk UHT',
-                'description' => 'Chilled dairy product',
-                'category' => 'Chilled',
-                'uom' => 'Carton',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-
-            [
-                'id' => 'SKU003',
-                'alternative_code' => 'ALT003',
-                'name' => 'Frozen Chicken',
-                'description' => 'Frozen meat product',
+                'id' => 'WHOLE-CHICKEN-06',
+                'alternative_code' => '',
+                'name' => 'Ayam Karkas Marinasi UK 0.6-0.7',
+                'description' => 'Ayam Karkas Marinasi UK 0.6-0.7 25e',
                 'category' => 'Frozen',
+                'uom' => 'Bag',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            [
+                'id' => 'WHOLE-CHICKEN-07',
+                'alternative_code' => '',
+                'name' => 'Ayam Karkas Marinasi UK 0.7-0.8',
+                'description' => 'Ayam Karkas Marinasi UK 0.7-0.8 25e',
+                'category' => 'Frozen',
+                'uom' => 'Bag',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            [
+                'id' => 'WHOLE-CHICKEN-1.1',
+                'alternative_code' => '',
+                'name' => 'Ayam Karkas Marinasi UK 1.1',
+                'description' => 'Ayam Karkas Marinasi UK 1.1 20e',
+                'category' => 'Frozen',
+                'uom' => 'Bag',
+                'created_at' => now(),
+                'updated_at' => now()
+            ]
+            ,
+
+            [
+                'id' => 'BASMATI-RICE',
+                'alternative_code' => '',
+                'name' => 'Beras Basmati Shukriya 1kg',
+                'description' => 'Beras Basmati Shukriya 1kg',
+                'category' => 'Dry',
                 'uom' => 'Bag',
                 'created_at' => now(),
                 'updated_at' => now()

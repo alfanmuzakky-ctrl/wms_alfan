@@ -153,7 +153,21 @@
                     @foreach($d->orders as $a)
                     <tr>
                         <td>{{$d->sku}}</td>
-                        <td>{{$a->location}}</td>
+                        <td>
+    <select class="form-control location-select" 
+        data-order-id="{{ $a->id }}" 
+        data-allocated-qty="{{ $a->qty_allocated }}">
+    @foreach($locationsBySku[$d->sku] ?? [] as $inv)
+        <option value="{{ $inv->location_id }}" {{ $a->location == $inv->location_id ? 'selected' : '' }}>
+            {{ $inv->location_id }}
+        </option>
+    @endforeach
+</select>
+
+    <button onclick="openReallocate({{ $a->id }})">
+        Pindah
+    </button>
+</td>
                         <td>{{$a->batch_number ?? '-'}}</td>
                         <td>{{$a->expired_date ?? '-'}}</td>
                         <td>{{$a->qty_allocated}}</td>

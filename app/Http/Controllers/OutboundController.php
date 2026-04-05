@@ -69,11 +69,16 @@ public function show($id)
 
     $skus = Sku::orderBy('id')->get();
 
+    $locationsBySku = Inventory::whereRaw('qty_stock - qty_allocated > 0')
+        ->get()
+        ->groupBy('sku_id');
+
     return view('outbounds.show', compact(
-        'outbound',
-        'details',
-        'skus'
-    ));
+    'outbound',
+    'details',
+    'skus',
+    'locationsBySku'
+));
 }
 
 
@@ -147,6 +152,7 @@ public function addSku(Request $request,$id)
                 
                 OrderDetail::create([
                     'outbound_detail_id' => $detail->id,
+                    'inventory_id' => $stock->id, // 🔥 INI KUNCI
                     'location' => $stock->location_id,
                     'batch_number' => $stock->batch_number,
                     'expired_date' => $stock->expired_date,
@@ -241,10 +247,7 @@ public function addSku(Request $request,$id)
             $order->save();
 
             
-            $binStock = Inventory::where('sku_id', $detail->sku)
-                ->where('location_id', $order->location)
-                ->where('batch_number', $order->batch_number)
-                ->first();
+            $binStock = $order->inventory;
 
             if ($binStock) {
 
@@ -443,6 +446,103 @@ public function addSku(Request $request,$id)
             'success' => false,
             'message' => $e->getMessage()
         ], 400);
+    }
+}
+
+public function reallocate(Request $request)
+{
+    DB::beginTransaction();
+
+    try {
+
+        $order = OrderDetail::findOrFail($request->order_id);
+
+// ambil inventory source
+$source = $order->inventory;
+
+if (!$source) {
+    throw new \Exception("Inventory source tidak ditemukan");
+}
+
+// ambil sku dari inventory
+$skuId = $source->sku_id;
+
+        $qty = $request->qty;
+
+        if ($qty > $order->qty_allocated) {
+            throw new \Exception("Qty melebihi allocated");
+        }
+
+        // 🔥 STEP 1: BALIKIN KE SOURCE
+        $source->qty_allocated -= $qty;
+        $source->save();
+
+        // 🔥 STEP 2: KURANGI ORDER LAMA
+        $order->qty_allocated -= $qty;
+        $order->save();
+        if ($order->qty_allocated <= 0) {
+            $order->delete();
+}
+        // 🔥 STEP 3: AMBIL STOCK DARI LOKASI TUJUAN (FIFO/FEFO)
+        $stocks = Inventory::where('sku_id', $skuId)
+            ->where('location_id', $request->dest_location_id)
+            ->whereRaw('qty_stock - qty_allocated > 0')
+            ->orderByRaw('expired_date IS NULL')
+            ->orderBy('expired_date','asc')
+            ->orderBy('created_at','asc')
+            ->get();
+
+        $need = $qty;
+
+        foreach ($stocks as $stock) {
+
+            if ($need <= 0) break;
+
+            $available = $stock->qty_stock - $stock->qty_allocated;
+
+            if ($available <= 0) continue;
+
+            $take = min($available, $need);
+
+            // 🔥 CREATE ORDER BARU (INI KUNCI)
+            OrderDetail::create([
+                'outbound_detail_id' => $order->outbound_detail_id,
+                'inventory_id' => $stock->id,
+                'location' => $stock->location_id,
+                'batch_number' => $stock->batch_number,
+                'expired_date' => $stock->expired_date,
+                'qty_allocated' => $take,
+                'qty_picked' => 0,
+                'status' => 'ALLOCATED'
+            ]);
+
+            // update stock
+            $stock->qty_allocated += $take;
+            $stock->save();
+
+            $need -= $take;
+        }
+
+        if ($need > 0) {
+            throw new \Exception("Stock tujuan tidak cukup");
+        }
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Reallocate berhasil'
+        ]);
+
+    } catch (\Exception $e) {
+
+        DB::rollBack();
+
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage(),
+            'reload_drawer' => true
+        ]);
     }
 }
 }

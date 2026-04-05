@@ -100,7 +100,8 @@ class InboundController extends Controller
                     'sku_id' => $detail->sku_id,
                     'location_id' => 'INB-STATION',
                     'batch_number' => $detail->batch_number,
-                    'expired_date' => $detail->expired_date
+                    'expired_date' => $detail->expired_date,
+                    'inbound_detail_id' => $detail->id,
                 ],
                 ['qty_stock' => 0, 'qty_allocated' => 0]
             );
@@ -178,6 +179,7 @@ class InboundController extends Controller
                     'location_id' => $request->destination,
                     'batch_number' => $source->batch_number,
                     'expired_date' => $source->expired_date,
+                    'inbound_detail_id' => $source->inbound_detail_id
                 ],
                 ['qty_stock' => 0, 'qty_allocated' => 0]
             );

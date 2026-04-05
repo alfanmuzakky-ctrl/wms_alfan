@@ -47,6 +47,30 @@ return new class extends Migration
                 'contact_phone' => '0812344231564',
                 'created_at' => now(),
                 'updated_at' => now()
+            ],
+            [
+                'id' => 'EMADOS-CIMAHI',
+                'name' => 'Emados Cimahi',
+                'company_name' => 'PT Emados Kebab Indonesia',
+                'email' => 'emados@gmail.com',
+                'phone' => '0812344231564',
+                'address' => 'Jl. Cigugur Tengah No.52, Cigugur Tengah, Kec. Cimahi Tengah, Kota Cimahi, Jawa Barat 40522',
+                'contact_person' => 'Sofyan',
+                'contact_phone' => '083897714546',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'id' => 'EMADOS-DAGO',
+                'name' => 'Emados Dago',
+                'company_name' => 'PT Emados Kebab Indonesia',
+                'email' => 'emados@gmail.com',
+                'phone' => '0812344231564',
+                'address' => 'Jl. Ir. H. Juanda No.314, Dago, Kecamatan Coblong, Kota Bandung, Jawa Barat 40135',
+                'contact_person' => 'Ara',
+                'contact_phone' => '0832347213546',
+                'created_at' => now(),
+                'updated_at' => now()
             ]
         ]);
     }

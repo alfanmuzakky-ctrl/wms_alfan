@@ -23,7 +23,8 @@ return new class extends Migration
             $table->enum('status', [
                 'CREATE',
                 'PARTIAL',
-                'RECEIVED'
+                'RECEIVED',
+                'CLOSE'
             ])->default('CREATE');
 
             $table->timestamps();

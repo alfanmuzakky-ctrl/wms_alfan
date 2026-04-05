@@ -16,6 +16,7 @@
                 <th width="15%">Location</th>
                 <th width="15%">Batch</th>
                 <th width="15%">Expired</th>
+                <th width="15%">Inbound ID</th>
                 <th width="13%">Qty Stock</th>
                 <th width="13%">Qty Available</th>
                 <th width="14%">Qty Allocated</th>
@@ -24,7 +25,10 @@
         <tbody>
             @foreach($inventories as $inv)
                 <tr class="row-hover">
-                    <td class="font-bold">{{ $inv->sku_id }}</td>
+                    
+                    <td><strong>{{$inv->sku_id}}</strong><br>
+                        <small>{{$inv->sku->name ?? '-'}}</small>
+                        </td>
                     <td>
                         <span class="location-badge">
                             {{ $inv->location_id }}
@@ -32,7 +36,7 @@
                     </td>
                     <td>{{ $inv->batch_number ?? '-' }}</td>
                     <td>{{ $inv->expired_date ?? '-' }}</td>
-                    
+                    <td>{{ $inv->inboundDetail->inbound->id ?? '-' }}</td>
                     <td class="text-center font-bold">
                         {{ number_format($inv->qty_stock) }}
                     </td>

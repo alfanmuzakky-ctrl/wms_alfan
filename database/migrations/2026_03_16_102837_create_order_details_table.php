@@ -8,29 +8,38 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('order_details', function (Blueprint $table) {
+                    Schema::create('order_details', function (Blueprint $table) {
 
-            $table->id();
+                $table->id();
 
-            $table->unsignedBigInteger('outbound_detail_id');
+                $table->unsignedBigInteger('outbound_detail_id');
 
-            $table->string('location');
+                // 🔥 TAMBAHAN PENTING
+                $table->unsignedBigInteger('inventory_id')->nullable();
 
-            $table->string('batch_number')->nullable();
-            $table->date('expired_date')->nullable();
+                $table->string('location');
 
-            $table->integer('qty_allocated')->default(0);
-            $table->integer('qty_picked')->default(0);
+                $table->string('batch_number')->nullable();
+                $table->date('expired_date')->nullable();
 
-            $table->string('status')->default('ALLOCATED');
+                $table->integer('qty_allocated')->default(0);
+                $table->integer('qty_picked')->default(0);
 
-            $table->timestamps();
+                $table->string('status')->default('ALLOCATED');
 
-            $table->foreign('outbound_detail_id')
-                ->references('id')
-                ->on('outbound_details')
-                ->onDelete('cascade');
-        });
+                $table->timestamps();
+
+                $table->foreign('outbound_detail_id')
+                    ->references('id')
+                    ->on('outbound_details')
+                    ->onDelete('cascade');
+
+                // 🔥 RELASI KE INVENTORY
+                $table->foreign('inventory_id')
+                    ->references('id')
+                    ->on('inventories')
+                    ->onDelete('set null');
+            });
     }
 
     public function down(): void

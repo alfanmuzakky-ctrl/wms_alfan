@@ -29,12 +29,12 @@ return new class extends Migration
                 'name' => 'PT Dua Putra Perkasa Pratama',
                 'company_name' => 'Dua Putra Perkasa Pratama',
                 'phone' => '02129555555',
-                'email' => 'DuaPutra@gmail.com',
+                'email' => 'duaputra@gmail.com',
                 'address' => 'Jl. Baru Cipendawa No. 88 , Kawasan Industri Cipendawa, Bekasi 17117',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
-
+    
             [
                 'id' => 'DEANYS-PUTRA',
                 'name' => 'PT Deanys Putra Berdikari',

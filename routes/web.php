@@ -107,3 +107,5 @@ Route::post('/receive', [InboundController::class, 'received']);
     });
 
 });
+
+Route::post('/reallocate', [OutboundController::class, 'reallocate']);

@@ -51,6 +51,22 @@ return new class extends Migration
                 'location_attribute' => 'Active',
                 'created_at' => now(),
                 'updated_at' => now(),
+            ],
+            [
+                'id' => 'DRY-A-01',
+                'zone_group' => 'ANTEROOM',
+                'location_category' => 'Ac Room',
+                'location_attribute' => 'Active',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 'DRY-A-02',
+                'zone_group' => 'ANTEROOM',
+                'location_category' => 'Ac Room',
+                'location_attribute' => 'Active',
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
         ]);
     }

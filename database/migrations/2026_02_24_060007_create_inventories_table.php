@@ -14,18 +14,30 @@ return new class extends Migration
    public function up()
 {
     Schema::create('inventories', function (Blueprint $table) {
-    $table->id();
-    $table->string('sku_id');
-    $table->string('location_id');
-    $table->string('batch_number')->nullable();
-    $table->date('expired_date')->nullable();
-    $table->integer('qty_stock')->default(0);
-    $table->integer('qty_allocated')->default(0);
-    $table->timestamps();
+        $table->id();
 
-    $table->foreign('sku_id')->references('id')->on('skus')->onDelete('cascade');
-    $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
-});
+        $table->string('sku_id');
+        $table->string('location_id');
+
+        $table->unsignedBigInteger('inbound_detail_id');
+
+        $table->string('batch_number')->nullable();
+        $table->date('expired_date')->nullable();
+
+        $table->integer('qty_stock')->default(0);
+        $table->integer('qty_allocated')->default(0);
+
+        $table->timestamps();
+
+        $table->foreign('sku_id')->references('id')->on('skus')->onDelete('cascade');
+        $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
+
+
+        $table->foreign('inbound_detail_id')
+              ->references('id')
+              ->on('inbound_details')
+              ->onDelete('cascade');
+    });
 }
 
     

@@ -11,6 +11,7 @@ class Inventory extends Model
     'location_id',
     'batch_number',
     'expired_date',
+    'inbound_detail_id',
     'qty_stock',
     'qty_allocated'
 ];
@@ -27,5 +28,9 @@ public function sku()
 public function location()
 {
     return $this->belongsTo(Location::class);
+}
+public function inboundDetail()
+{
+    return $this->belongsTo(InboundDetail::class);
 }
 }

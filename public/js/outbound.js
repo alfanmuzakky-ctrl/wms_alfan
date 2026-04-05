@@ -123,6 +123,41 @@ function shipOutbound(id){
 }
 
 
+function openReallocate(orderId) {
+    const select = document.querySelector(`.location-select[data-order-id='${orderId}']`);
+    if (!select) return;
+
+    const dest = select.value;
+    const qty = select.dataset.allocatedQty;
+
+    if (!dest || !qty) return;
+
+    fetch('/reallocate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            order_id: orderId,
+            dest_location_id: dest,
+            qty: qty
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('Reallocation berhasil');
+
+            window.location.href = window.location.pathname + '#outbound';
+
+        } else {
+            alert(data.message);
+        }
+    });
+}
+
+
 /* 
    EXPORT GLOBAL
  */
@@ -131,3 +166,19 @@ window.allocateOutbound = allocateOutbound;
 window.pickingOutbound = pickingOutbound;
 window.packingOutbound = packingOutbound;
 window.shipOutbound = shipOutbound;
+window.openReallocate = openReallocate;
+
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    if (window.location.hash === '#outbound') {
+
+        const tabBtn = document.querySelector(".tab-item:nth-child(2)");
+
+        if (tabBtn) {
+            tabBtn.click();
+        }
+
+    }
+
+});
