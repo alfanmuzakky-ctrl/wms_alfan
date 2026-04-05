@@ -25,34 +25,34 @@ return new class extends Migration
         DB::table('suppliers')->insert([
 
             [
-                'id' => 'SUP001',
-                'name' => 'PT Indo Food',
-                'company_name' => 'Indo Food Distribution',
-                'phone' => '021111111',
-                'email' => 'indfood@test.com',
-                'address' => 'Jakarta',
+                'id' => 'DUA-PUTRA',
+                'name' => 'PT Dua Putra Perkasa Pratama',
+                'company_name' => 'Dua Putra Perkasa Pratama',
+                'phone' => '02129555555',
+                'email' => 'DuaPutra@gmail.com',
+                'address' => 'Jl. Baru Cipendawa No. 88 , Kawasan Industri Cipendawa, Bekasi 17117',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
 
             [
-                'id' => 'SUP002',
-                'name' => 'PT Dairy Milk',
-                'company_name' => 'Dairy Milk Indonesia',
-                'phone' => '021222222',
-                'email' => 'dairymilk@test.com',
-                'address' => 'Bandung',
+                'id' => 'DEANYS-PUTRA',
+                'name' => 'PT Deanys Putra Berdikari',
+                'company_name' => 'Deanys Putra Berdikari',
+                'phone' => '085723660682',
+                'email' => 'deanysputraberdikari@gmail.com',
+                'address' => 'Jl. Cijagra No. 19A Bandung, Jawa Barat',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
 
             [
-                'id' => 'SUP003',
-                'name' => 'PT Frozen Food',
-                'company_name' => 'Frozen Food Supply',
-                'phone' => '021333333',
-                'email' => 'frozen@test.com',
-                'address' => 'Surabaya',
+                'id' => 'ELEFIN',
+                'name' => 'PT Vigo Frozen Indonesia',
+                'company_name' => 'Vigo Frozen Indonesia',
+                'phone' => '082123847731',
+                'email' => 'vigofrozen19@gmail.com',
+                'address' => 'Jl. Cikutra No. 40 Bandung, Jawa Barat',
                 'created_at' => now(),
                 'updated_at' => now()
             ]

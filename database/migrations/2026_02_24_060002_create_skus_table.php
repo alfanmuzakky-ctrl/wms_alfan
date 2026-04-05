@@ -25,7 +25,7 @@ return new class extends Migration
         DB::table('skus')->insert([
 
             [
-                'id' => 'SKU001',
+                'id' => '',
                 'alternative_code' => 'ALT001',
                 'name' => 'Instant Noodle',
                 'description' => 'Dry food product',

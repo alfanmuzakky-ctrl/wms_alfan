@@ -25,26 +25,26 @@ return new class extends Migration
 
         DB::table('customers')->insert([
             [
-                'id' => 'CUST001',
-                'name' => 'Tokopedia',
-                'company_name' => 'Tokopedia Warehouse',
-                'email' => 'tokopedia@test.com',
-                'phone' => '08123456789',
-                'address' => 'Jakarta',
-                'contact_person' => 'Budi',
-                'contact_phone' => '08123456789',
+                'id' => 'EMADOS-BUAH-BATU',
+                'name' => 'Emados Buah Batu',
+                'company_name' => 'PT Emados Kebab Indonesia',
+                'email' => 'emados@gmail.com',
+                'phone' => '0812983127422',
+                'address' => 'Jl. Buah Batu No.167, Turangga, Kec. Lengkong, Kota Bandung, Jawa Barat 40265',
+                'contact_person' => 'Rifki',
+                'contact_phone' => '0812983127422',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
-                'id' => 'CUST002',
-                'name' => 'Shopee',
-                'company_name' => 'Shopee Indonesia',
-                'email' => 'shopee@test.com',
-                'phone' => '0811111111',
-                'address' => 'Jakarta',
-                'contact_person' => 'Andi',
-                'contact_phone' => '0811111111',
+                'id' => 'EMADOS-KOPO',
+                'name' => 'Emados Kopo',
+                'company_name' => 'PT Emados Kebab Indonesia',
+                'email' => 'emados@gmail.com',
+                'phone' => '0812344231564',
+                'address' => 'Jl. Kopo Bihbul No.69, Sayati, Kec. Margahayu, Kabupaten Bandung, Jawa Barat 40228',
+                'contact_person' => 'Hanny',
+                'contact_phone' => '0812344231564',
                 'created_at' => now(),
                 'updated_at' => now()
             ]

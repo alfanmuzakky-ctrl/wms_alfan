@@ -37,7 +37,15 @@ return new class extends Migration
                 'updated_at' => now(),
             ],
             [
-                'id' => 'LOCATION-01',
+                'id' => 'FROZEN-A-01',
+                'zone_group' => 'FROZEN',
+                'location_category' => 'Frozen',
+                'location_attribute' => 'Active',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 'FROZEN-A-02',
                 'zone_group' => 'FROZEN',
                 'location_category' => 'Frozen',
                 'location_attribute' => 'Active',
