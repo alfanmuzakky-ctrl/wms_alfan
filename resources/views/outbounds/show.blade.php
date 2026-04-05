@@ -188,7 +188,7 @@
     </div>
 
 </div>
-
+@if($outbound->status !== 'SHIPPED')
 <div class="toolbar" style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
 
 <button
@@ -229,7 +229,7 @@ Print Picking
 </button>
 
 </div>
-
+@endif
 
 <script src="{{ asset('js/outbound.js') }}"></script>
 

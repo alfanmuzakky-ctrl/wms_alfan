@@ -19,7 +19,7 @@ return new class extends Migration
         $table->string('sku_id');
         $table->string('location_id');
 
-        $table->unsignedBigInteger('inbound_detail_id');
+        $table->unsignedBigInteger('inbound_detail_id')->nullable();
 
         $table->string('batch_number')->nullable();
         $table->date('expired_date')->nullable();
@@ -33,10 +33,10 @@ return new class extends Migration
         $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
 
 
-        $table->foreign('inbound_detail_id')
-              ->references('id')
-              ->on('inbound_details')
-              ->onDelete('cascade');
+           $table->foreign('inbound_detail_id')
+                ->references('id')
+                ->on('inbound_details')
+                ->nullOnDelete();
     });
 }
 

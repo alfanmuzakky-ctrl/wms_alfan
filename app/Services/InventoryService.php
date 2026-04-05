@@ -3,33 +3,16 @@
 namespace App\Services;
 
 use App\Models\Inventory;
-use App\Models\InventoryLocation;
 
 class InventoryService
 {
-    public function addStock($skuId, $locationId, $qty, $batch = null, $expired = null)
+    public function index()
     {
-        // Update summary inventory
-        $inventory = Inventory::firstOrCreate(
-            ['sku_id' => $skuId],
-            ['qty_stock' => 0, 'qty_allocated' => 0]
-        );
+        $inventories = Inventory::where('qty_stock', '>', 0)
+            ->orderBy('sku_id')
+            ->orderBy('location_id')
+            ->get();
 
-        $inventory->qty_stock += $qty;
-        $inventory->save();
-
-        // Update location stock
-        $locationStock = InventoryLocation::firstOrCreate(
-            [
-                'sku_id' => $skuId,
-                'location_id' => $locationId,
-                'batch_number' => $batch,
-                'expired_date' => $expired
-            ],
-            ['qty' => 0]
-        );
-
-        $locationStock->qty += $qty;
-        $locationStock->save();
+        return view('inventories.index', compact('inventories'));
     }
 }

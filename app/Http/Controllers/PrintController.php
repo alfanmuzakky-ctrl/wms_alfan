@@ -2,47 +2,29 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Models\Inbound;
-use App\Models\InboundDetail;
-use App\Models\Outbound;
-use App\Models\Allocation;
-use App\Models\OrderDetail;
+use App\Services\PrintService;
 
 class PrintController extends Controller
 {
+    protected $service;
 
-    /* Print Inbound Document */
+    public function __construct(PrintService $service)
+    {
+        $this->service = $service;
+    }
+
     public function printInbound($id)
     {
-        $inbound = Inbound::with('details')->findOrFail($id);
-
-        return view('print.inbound', compact('inbound'));
+        return $this->service->printInbound($id);
     }
 
-    /* Print SKU Label */
     public function printSku($detail_id)
     {
-        $detail = InboundDetail::with(['inbound', 'sku'])->findOrFail($detail_id);
-
-        return view('print.sku', compact('detail'));
+        return $this->service->printSku($detail_id);
     }
 
-    /* Print Picking List (Outbound) */
     public function printPicking($id)
-{
-    $outbound = Outbound::findOrFail($id);
-
-    $orderDetails = OrderDetail::with('outboundDetail.skuData')
-        ->whereHas('outboundDetail', function($q) use ($id){
-            $q->where('outbound_id',$id);
-        })
-        ->orderBy('location')
-        ->get();
-
-    return view('print.picking_list', compact(
-        'outbound',
-        'orderDetails'
-    ));
-}
+    {
+        return $this->service->printPicking($id);
+    }
 }

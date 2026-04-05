@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Inventory;
-
+use App\Services\InventoryService;
 
 class InventoryController extends Controller
 {
-    public function index()
-{
-    $inventories = Inventory::where('qty_stock', '>', 0)
-        ->orderBy('sku_id')
-        ->orderBy('location_id')
-        ->get();
+    protected $service;
 
-    return view('inventories.index', compact('inventories'));
-}
+    public function __construct(InventoryService $service)
+    {
+        $this->service = $service;
+    }
+
+    public function index()
+    {
+        return $this->service->index();
+    }
 }

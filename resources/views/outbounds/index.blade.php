@@ -47,9 +47,11 @@ class="row-hover"
 @if($outbound->status !== 'SHIPPED')
 
 <button
-class="btn-danger"
-onclick="shipOutbound('{{ $outbound->id }}')"
->
+onclick="submitAction(
+'/outbounds/{{ $outbound->id }}/ship',
+'outbounds',
+'{{ $outbound->id }}'
+)">
 Ship
 </button>
 

@@ -3,546 +3,77 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Models\Outbound;
-use App\Models\OutboundDetail;
-use App\Models\Customer;
-use App\Models\Sku;
-use App\Models\Inventory;
-use App\Models\OrderDetail;
+use App\Services\OutboundService;
+use App\Services\AllocationService;
+use App\Services\PickingService;
+use App\Services\ShippingService;
 
 class OutboundController extends Controller
 {
+    protected $service;
+    protected $allocationService;
+    protected $pickingService;
+    protected $shippingService;
 
-public function index()
-{
+    public function __construct(
+        OutboundService $service,
+        AllocationService $allocationService,
+        PickingService $pickingService,
+        ShippingService $shippingService
+    ) {
+        $this->service = $service;
+        $this->allocationService = $allocationService;
+        $this->pickingService = $pickingService;
+        $this->shippingService = $shippingService;
+    }
 
-$outbounds = Outbound::with('customer')
-    ->orderBy('created_at','desc')
-    ->get();
+    public function index()
+    {
+        return $this->service->index();
+    }
 
-return view('outbounds.index',compact('outbounds'));
+    public function create()
+    {
+        return $this->service->create();
+    }
 
-}
+    public function store(Request $request)
+    {
+        return $this->service->store($request);
+    }
 
+    public function show($id)
+    {
+        return $this->service->show($id);
+    }
 
-public function create()
-{
-    $customers = Customer::orderBy('name')->get();
-
-    return view('outbounds.create',compact('customers'));
-}
-
-
-public function store(Request $request)
-{
-
-    $request->validate([
-        'id'=>'required|unique:outbounds,id',
-        'customer_id'=>'required'
-    ]);
-
-    Outbound::create([
-        'id'=>$request->id,
-        'customer_id'=>$request->customer_id,
-        'status'=>'CREATE'
-    ]);
-
-    return response()->json([
-            'success' => true,
-            'message' => 'Outbound berhasil dibuat',
-            'module' => 'outbounds'
-        ]);
-}
-
-
-public function show($id)
-{
-    $outbound = Outbound::with('customer')->findOrFail($id);
-
-    $details = OutboundDetail::where('outbound_id', $id)
-        ->with([
-            'skuData',
-            'orders'
-        ])
-        ->get();
-
-    $skus = Sku::orderBy('id')->get();
-
-    $locationsBySku = Inventory::whereRaw('qty_stock - qty_allocated > 0')
-        ->get()
-        ->groupBy('sku_id');
-
-    return view('outbounds.show', compact(
-    'outbound',
-    'details',
-    'skus',
-    'locationsBySku'
-));
-}
-
-
-public function addSku(Request $request,$id)
-{
-
-    $request->validate([
-        'sku'=>'required',
-        'qty'=>'required|numeric|min:1'
-    ]);
-
-    OutboundDetail::create([
-        'outbound_id'=>$id,
-        'sku'=>$request->sku,
-        'order_qty'=>$request->qty,
-        'status'=>'CREATE'
-    ]);
-
-    return response()->json([
-            'success' => true,
-            'message' => 'SKU berhasil ditambahkan'
-        ]);
-}
+    public function addSku(Request $request,$id)
+    {
+        return $this->service->addSku($request,$id);
+    }
 
     public function allocate($id)
-{
-    try {
-
-        $outbound = Outbound::with('details')->findOrFail($id);
-
-        foreach ($outbound->details as $detail)
-        {
-
-            $need = $detail->order_qty - $detail->qty_allocated;
-
-            if ($need <= 0) continue;
-
-            
-        
-            $hasExpired = Inventory::where('sku_id', $detail->sku)
-                ->whereNotNull('expired_date')
-                ->exists();
-
-            
-            $query = Inventory::where('sku_id', $detail->sku)
-                ->whereRaw('qty_stock - qty_allocated > 0');
-            // FEFO & FIFO
-            if ($hasExpired) {
-               
-                $query->whereNotNull('expired_date')
-                      ->orderBy('expired_date','asc')
-                      ->orderBy('created_at','asc'); 
-            } else {
-                
-                $query->orderBy('created_at','asc');
-            }
-
-            $stocks = $query->get();
-
-            foreach ($stocks as $stock)
-            {
-
-                if ($need <= 0) break;
-
-                $available = $stock->qty_stock - $stock->qty_allocated;
-
-                if ($available <= 0) continue;
-
-                $allocate = min($available, $need);
-
-                
-                OrderDetail::create([
-                    'outbound_detail_id' => $detail->id,
-                    'inventory_id' => $stock->id, // 🔥 INI KUNCI
-                    'location' => $stock->location_id,
-                    'batch_number' => $stock->batch_number,
-                    'expired_date' => $stock->expired_date,
-                    'qty_allocated' => $allocate,
-                    'qty_picked' => 0,
-                    'status' => 'ALLOCATED'
-                ]);
-
-                
-                $stock->qty_allocated += $allocate;
-                $stock->save();
-
-                
-                $detail->qty_allocated += $allocate;
-
-                $need -= $allocate;
-            }
-
-           
-            if ($detail->qty_allocated >= $detail->order_qty) {
-                $detail->status = 'ALLOCATED';
-            } else {
-                $detail->status = 'PARTIAL';
-            }
-
-            $detail->save();
-        }
-
-       
-        $allAllocated = $outbound->details->every(function($d){
-            return $d->status === 'ALLOCATED';
-        });
-
-        $outbound->status = $allAllocated ? 'ALLOCATED' : 'PARTIAL';
-        $outbound->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Allocation Complete',
-            'reload_drawer' => true
-        ]);
-
-    } catch (\Exception $e) {
-
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage(),
-            'reload_drawer' => true
-        ]);
+    {
+        return $this->allocationService->allocate($id);
     }
-}
 
     public function picking($id)
-{
-    $outbound = Outbound::with('details.orders')->findOrFail($id);
-
-    
-    if ($outbound->status === 'PICKED') {
-        return response()->json([
-            'success' => false,
-            'message' => 'Outbound sudah selesai picking'
-        ], 400);
+    {
+        return $this->pickingService->picking($id);
     }
-
-    foreach ($outbound->details as $detail) {
-
-        foreach ($detail->orders as $order) {
-
-            
-            if ($order->qty_picked >= $order->qty_allocated) {
-                continue;
-            }
-
-            
-            $remainingQty = $order->qty_allocated - $order->qty_picked;
-
-            if ($remainingQty <= 0) {
-                continue;
-            }
-
-            $pickQty = $remainingQty;
-
-            
-            $order->qty_picked += $pickQty;
-
-            if ($order->qty_picked >= $order->qty_allocated) {
-                $order->status = 'PICKED';
-            } else {
-                $order->status = 'PARTIAL';
-            }
-
-            $order->save();
-
-            
-            $binStock = $order->inventory;
-
-            if ($binStock) {
-
-                $binStock->qty_allocated -= $pickQty;
-                $binStock->qty_stock -= $pickQty;
-
-                
-                if ($binStock->qty_allocated < 0) {
-                    $binStock->qty_allocated = 0;
-                }
-
-                if ($binStock->qty_stock < 0) {
-                    $binStock->qty_stock = 0;
-                }
-
-                $binStock->save();
-            }
-
-           
-            $outStation = Inventory::where('sku_id', $detail->sku)
-                ->where('location_id', 'OUT-STATION')
-                ->where('batch_number', $order->batch_number)
-                ->first();
-
-            if ($outStation) {
-
-                $outStation->qty_stock += $pickQty;
-
-                $outStation->qty_allocated = $outStation->qty_stock;
-
-                $outStation->save();
-
-            } else {
-
-                Inventory::create([
-                    'sku_id'        => $detail->sku,
-                    'location_id'   => 'OUT-STATION',
-                    'batch_number'  => $order->batch_number,
-                    'expired_date'  => $order->expired_date,
-                    'qty_stock'     => $pickQty,
-                    'qty_allocated' => $pickQty
-                ]);
-            }
-
-            
-            $detail->qty_picked += $pickQty;
-        }
-
-        
-        if ($detail->qty_picked >= $detail->qty_allocated) {
-            $detail->status = 'PICKED';
-        } else {
-            $detail->status = 'PARTIAL';
-        }
-
-        $detail->save();
-    }
-
-    
-    $allPicked = $outbound->details->every(function ($detail) {
-        return $detail->status === 'PICKED';
-    });
-
-    $outbound->status = $allPicked ? 'PICKED' : 'PARTIAL';
-    $outbound->save();
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Picking berhasil diproses'
-    ]);
-}
 
     public function packing($id)
     {
-
-    $outbound = Outbound::with('details')->findOrFail($id);
-
-    foreach ($outbound->details as $detail)
-    {
-
-    $detail->qty_packed = $detail->qty_picked;
-    $detail->status = 'PACKED';
-    $detail->save();
-
+        return $this->pickingService->packing($id);
     }
 
-    $outbound->status = 'PACKED';
-    $outbound->save();
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Packing selesai'
-    ]);
-
-    }
     public function ship($id)
-{
-    try {
-
-        $outbound = Outbound::with('details')->findOrFail($id);
-
-        
-        if ($outbound->status !== 'PACKED') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Outbound belum selesai packing'
-            ], 400);
-        }
-
-        foreach ($outbound->details as $detail) {
-
-            
-            if ($detail->qty_packed <= 0) {
-                return response()->json([
-                    'success' => false,
-                    'message' => "SKU {$detail->sku} belum dipacking"
-                ], 400);
-            }
-
-            
-            if ($detail->qty_packed < $detail->qty_allocated) {
-                return response()->json([
-                    'success' => false,
-                    'message' => "SKU {$detail->sku} belum fully packed"
-                ], 400);
-            }
-
-            $shipQty = $detail->qty_packed;
-
-            
-            $outStations = Inventory::where('sku_id', $detail->sku)
-                ->where('location_id', 'OUT-STATION')
-                ->where('qty_stock', '>', 0)
-                ->orderByRaw('expired_date IS NULL') 
-                ->orderBy('expired_date','asc')
-                ->orderBy('created_at','asc')
-                ->get();
-
-            if ($outStations->isEmpty()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Stock OUT-STATION tidak ditemukan untuk SKU {$detail->sku}"
-                ], 400);
-            }
-
-            $need = $shipQty;
-
-            foreach ($outStations as $stock) {
-
-                if ($need <= 0) break;
-
-                $available = $stock->qty_stock;
-
-                if ($available <= 0) continue;
-
-                $take = min($available, $need);
-
-                
-                $stock->qty_stock -= $take;
-                $stock->qty_allocated -= $take;
-
-                if ($stock->qty_allocated < 0) {
-                    $stock->qty_allocated = 0;
-                }
-
-                $stock->save();
-
-                $need -= $take;
-            }
-
-            
-            if ($need > 0) {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Stock OUT-STATION tidak cukup untuk SKU {$detail->sku}"
-                ], 400);
-            }
-
-            
-            $detail->status = 'SHIPPED';
-            $detail->save();
-        }
-
-        
-        $outbound->status = 'SHIPPED';
-        $outbound->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Outbound berhasil di shipping'
-        ]);
-
-    } catch (\Exception $e) {
-
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage()
-        ], 400);
+    {
+        return $this->shippingService->ship($id);
     }
-}
 
-public function reallocate(Request $request)
-{
-    DB::beginTransaction();
-
-    try {
-
-        $order = OrderDetail::findOrFail($request->order_id);
-
-// ambil inventory source
-$source = $order->inventory;
-
-if (!$source) {
-    throw new \Exception("Inventory source tidak ditemukan");
-}
-
-// ambil sku dari inventory
-$skuId = $source->sku_id;
-
-        $qty = $request->qty;
-
-        if ($qty > $order->qty_allocated) {
-            throw new \Exception("Qty melebihi allocated");
-        }
-
-        // 🔥 STEP 1: BALIKIN KE SOURCE
-        $source->qty_allocated -= $qty;
-        $source->save();
-
-        // 🔥 STEP 2: KURANGI ORDER LAMA
-        $order->qty_allocated -= $qty;
-        $order->save();
-        if ($order->qty_allocated <= 0) {
-            $order->delete();
-}
-        // 🔥 STEP 3: AMBIL STOCK DARI LOKASI TUJUAN (FIFO/FEFO)
-        $stocks = Inventory::where('sku_id', $skuId)
-            ->where('location_id', $request->dest_location_id)
-            ->whereRaw('qty_stock - qty_allocated > 0')
-            ->orderByRaw('expired_date IS NULL')
-            ->orderBy('expired_date','asc')
-            ->orderBy('created_at','asc')
-            ->get();
-
-        $need = $qty;
-
-        foreach ($stocks as $stock) {
-
-            if ($need <= 0) break;
-
-            $available = $stock->qty_stock - $stock->qty_allocated;
-
-            if ($available <= 0) continue;
-
-            $take = min($available, $need);
-
-            // 🔥 CREATE ORDER BARU (INI KUNCI)
-            OrderDetail::create([
-                'outbound_detail_id' => $order->outbound_detail_id,
-                'inventory_id' => $stock->id,
-                'location' => $stock->location_id,
-                'batch_number' => $stock->batch_number,
-                'expired_date' => $stock->expired_date,
-                'qty_allocated' => $take,
-                'qty_picked' => 0,
-                'status' => 'ALLOCATED'
-            ]);
-
-            // update stock
-            $stock->qty_allocated += $take;
-            $stock->save();
-
-            $need -= $take;
-        }
-
-        if ($need > 0) {
-            throw new \Exception("Stock tujuan tidak cukup");
-        }
-
-        DB::commit();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Reallocate berhasil'
-        ]);
-
-    } catch (\Exception $e) {
-
-        DB::rollBack();
-
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage(),
-            'reload_drawer' => true
-        ]);
+    public function reallocate(Request $request)
+    {
+        return $this->allocationService->reallocate($request);
     }
-}
 }

@@ -2,54 +2,40 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Models\Customer;
+use App\Services\CustomerService;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    /* Page Header: Index */
+    protected $service;
+
+    public function __construct(CustomerService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index()
     {
-        $customers = Customer::all();
-        return view('customers.index', compact('customers'));
+        return $this->service->index();
     }
 
-    /* Page Header: Create View */
     public function create()
     {
-        return view('customers.create');
+        return $this->service->create();
     }
 
-    /* Page Header: Store Data */
     public function store(Request $request)
     {
-        Customer::create($request->all());
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Customer berhasil ditambahkan',
-            'module'  => 'customers'
-        ]);
+        return $this->service->store($request);
     }
 
-    /* Page Header: Show Detail */
     public function show($id)
     {
-        $customer = Customer::findOrFail($id);
-        return view('customers.detail', compact('customer'));
+        return $this->service->show($id);
     }
 
-    /* Page Header: Update Data */
     public function update(Request $request, $id)
     {
-        $customer = Customer::findOrFail($id);
-        $customer->update($request->all());
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Customer berhasil diupdate',
-            'module'  => 'customers'
-        ]);
+        return $this->service->update($request, $id);
     }
 }
